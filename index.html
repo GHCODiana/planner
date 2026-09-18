@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Centro de Mando - Hana Dashboard v2.5</title>
+    <title>Centro de Mando - Hana Dashboard v3.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <style>
         * {
@@ -63,7 +63,7 @@
         }
         .card-title {
             font-family: 'Press Start 2P', monospace;
-            font-size: 13px;
+            font-size: 12px;
             color: #2e4627;
             margin-bottom: 12px;
             border-bottom: 2px dashed #7a9c6d;
@@ -74,8 +74,14 @@
         }
         
         .span-12 { grid-column: span 12; }
+        .span-9 { grid-column: span 9; }
         .span-8 { grid-column: span 8; }
         .span-4 { grid-column: span 4; }
+        .span-3 { grid-column: span 3; }
+
+        @media(max-width: 1100px) {
+            .span-9, .span-3, .span-8, .span-4 { grid-column: span 12; }
+        }
 
         /* Controles de Semana */
         .week-nav {
@@ -101,13 +107,13 @@
         }
         .retro-btn:hover { background: #5f7d54; }
 
-        /* Plan Semanal Ampliado */
+        /* Plan Semanal con Fechas */
         .week-grid-large {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 8px;
         }
-        @media(max-width: 1100px) {
+        @media(max-width: 1200px) {
             .week-grid-large { grid-template-columns: repeat(4, 1fr); }
         }
         .day-box-large {
@@ -117,31 +123,31 @@
             padding: 8px;
             display: flex;
             flex-direction: column;
-            min-height: 220px;
+            min-height: 240px;
         }
         .day-header {
             font-family: 'Press Start 2P', monospace;
-            font-size: 9px;
+            font-size: 8px;
             margin-bottom: 6px;
             padding: 4px;
             text-align: center;
             border-radius: 2px;
             color: #fff;
         }
-        .dh-0 { background-color: #d17b88; } /* Lunes */
-        .dh-1 { background-color: #c76b5c; } /* Martes */
-        .dh-2 { background-color: #5c888d; } /* Miércoles */
-        .dh-3 { background-color: #7b9c6d; } /* Jueves */
-        .dh-4 { background-color: #9b7bb5; } /* Viernes */
-        .dh-5 { background-color: #b59b7b; } /* Sábado */
-        .dh-6 { background-color: #d19b7b; } /* Domingo */
+        .dh-0 { background-color: #d17b88; }
+        .dh-1 { background-color: #c76b5c; }
+        .dh-2 { background-color: #5c888d; }
+        .dh-3 { background-color: #7b9c6d; }
+        .dh-4 { background-color: #9b7bb5; }
+        .dh-5 { background-color: #b59b7b; }
+        .dh-6 { background-color: #d19b7b; }
 
         .task-list {
             list-style: none;
             font-size: 16px;
             flex-grow: 1;
             overflow-y: auto;
-            max-height: 140px;
+            max-height: 150px;
             margin-bottom: 6px;
         }
         .task-item {
@@ -149,16 +155,13 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 4px;
-            background: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.6);
             padding: 2px 4px;
             border-radius: 2px;
         }
         .task-item input[type="checkbox"] { margin-right: 4px; cursor: pointer; }
         .task-delete { color: #c76b5c; cursor: pointer; font-weight: bold; font-size: 14px; border: none; background: none; }
-        .add-task-form {
-            display: flex;
-            gap: 4px;
-        }
+        .add-task-form { display: flex; gap: 4px; }
         .add-task-input {
             width: 100%;
             font-family: 'VT323', monospace;
@@ -189,7 +192,7 @@
             padding: 5px;
             background: #eaf2e3;
             cursor: pointer;
-            height: 35px;
+            height: 32px;
             vertical-align: top;
             position: relative;
         }
@@ -211,7 +214,7 @@
             border-radius: 50%;
         }
 
-        /* Hábitos 7 días */
+        /* Hábitos */
         .habit-row {
             display: flex;
             align-items: center;
@@ -223,14 +226,11 @@
             border-radius: 4px;
             border: 1px solid #6b8e5f;
         }
-        .habit-days {
-            display: flex;
-            gap: 4px;
-        }
+        .habit-days { display: flex; gap: 3px; }
         .habit-day-box {
-            width: 20px;
-            height: 20px;
-            font-size: 12px;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -247,86 +247,72 @@
         .progress-bar {
             background: #b5c7a5;
             border: 1px solid #55774a;
-            height: 12px;
+            height: 10px;
             border-radius: 3px;
             overflow: hidden;
-            margin-top: 2px;
             flex-grow: 1;
-            margin-left: 10px;
+            margin-left: 8px;
         }
-        .progress-fill {
-            background: #d17b88;
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s;
-        }
+        .progress-fill { background: #d17b88; height: 100%; width: 0%; }
 
-        /* Asistente Hana */
-        .hana-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .hana-sprite {
-            width: 85px;
-            height: 85px;
-            background: linear-gradient(135deg, #b5c7a5, #d17b88);
-            border: 2px solid #4a6741;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 38px;
-            flex-shrink: 0;
-            box-shadow: inset 0 0 10px #4a6741;
-            animation: floatHana 3s ease-in-out infinite;
-        }
-        @keyframes floatHana {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
+        /* Asistente y Música */
+        .hana-container { display: flex; align-items: center; gap: 12px; }
         .speech-bubble {
             background: #fff;
             border: 2px solid #4a6741;
             border-radius: 8px;
-            padding: 10px;
-            font-size: 18px;
+            padding: 8px;
+            font-size: 17px;
             position: relative;
             flex-grow: 1;
         }
-        .speech-bubble::after {
-            content: '';
-            position: absolute;
-            left: -10px;
-            top: 50%;
-            transform: translateY(-50%);
-            border-width: 6px 10px 6px 0;
-            border-style: solid;
-            border-color: transparent #4a6741 transparent transparent;
-        }
 
-        /* Notas */
+        /* Notas Verticales a la Derecha */
+        .notes-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
         .sticky-note {
             background: #f7e1d7;
             border: 1.5px dashed #c76b5c;
-            padding: 10px;
+            padding: 8px;
             border-radius: 4px;
-            font-size: 18px;
-            position: relative;
+            font-size: 16px;
         }
         .sticky-textarea {
             width: 100%;
-            height: 70px;
+            height: 65px;
             background: transparent;
             border: none;
             font-family: 'VT323', monospace;
-            font-size: 18px;
+            font-size: 16px;
             resize: none;
             color: #2b3a2a;
             outline: none;
         }
 
-        /* Modal de Eventos del Calendario */
+        /* HANOID: Avatar Animado Flotante en Pantalla */
+        #hanaMascot {
+            position: fixed;
+            width: 55px;
+            height: 55px;
+            background: #d17b88;
+            border: 2px solid #4a6741;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 2px 2px 0px #4a6741;
+            cursor: pointer;
+            z-index: 9999;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+        #hanaMascot:hover { transform: scale(1.15); }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -334,7 +320,7 @@
             background: rgba(0,0,0,0.4);
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 10000;
         }
         .modal-content {
             background: #e2ebd8;
@@ -348,9 +334,12 @@
 </head>
 <body>
 
+<!-- Avatar Animado de Hana que se mueve por toda la pantalla -->
+<div id="hanaMascot" title="¡Hola! Soy Hana, haz clic para hablar conmigo">🎧</div>
+
 <div class="window">
     <div class="title-bar">
-        <span>CENTRO DE MANDO // HANA.OS v2.5 (Modo Interactivo)</span>
+        <span>CENTRO DE MANDO // HANA.OS v3.0</span>
         <div class="window-controls">
             <span></span><span></span><span></span>
         </div>
@@ -358,41 +347,54 @@
     
     <div class="dashboard-grid">
         
-        <!-- PLAN SEMANAL AMPLIADO (12 cols - Más grande) -->
-        <div class="card span-12">
+        <!-- PLAN SEMANAL AMPLIADO CON FECHAS (9 cols) -->
+        <div class="card span-9">
             <div class="card-title">
-                PLAN SEMANAL DETALLADO (LUNES A DOMINGO)
+                PLAN SEMANAL (CON FECHAS)
                 <button class="retro-btn" onclick="resetCurrentWeek()">Limpiar Semana</button>
             </div>
             <div class="week-nav">
                 <button class="retro-btn" onclick="changeWeek(-1)">◀ Semana Anterior</button>
-                <span id="weekLabel" style="font-family: 'Press Start 2P', monospace; font-size: 11px;">Semana del Año</span>
+                <span id="weekLabel" style="font-family: 'Press Start 2P', monospace; font-size: 10px;">Semana</span>
                 <button class="retro-btn" onclick="changeWeek(1)">Semana Siguiente ▶</button>
             </div>
-            <div class="week-grid-large" id="weekGridContainer">
-                <!-- Se inyecta dinámicamente con JS -->
+            <div class="week-grid-large" id="weekGridContainer"></div>
+        </div>
+
+        <!-- NOTAS & PROYECTOS (3 cols - A LA DERECHA) -->
+        <div class="card span-3">
+            <div class="card-title">NOTAS & PROYECTOS</div>
+            <div class="notes-column">
+                <div class="sticky-note">
+                    <strong>Proyecto Alpha:</strong>
+                    <textarea class="sticky-textarea" id="note0" oninput="saveNotes()"></textarea>
+                </div>
+                <div class="sticky-note">
+                    <strong>Recordatorio:</strong>
+                    <textarea class="sticky-textarea" id="note1" oninput="saveNotes()"></textarea>
+                </div>
+                <div class="sticky-note">
+                    <strong>Ideas UI:</strong>
+                    <textarea class="sticky-textarea" id="note2" oninput="saveNotes()"></textarea>
+                </div>
             </div>
         </div>
 
         <!-- PRODUCTIVIDAD & HÁBITOS 7 DÍAS (8 cols) -->
         <div class="card span-8">
             <div class="card-title">PRODUCTIVIDAD & HÁBITOS (7 DÍAS)</div>
-            <div style="margin-bottom: 12px; font-size: 18px;">
+            <div style="margin-bottom: 10px; font-size: 17px;">
                 <strong>Metas Clave de la Semana:</strong>
-                <div id="metasContainer" style="margin-top: 4px;">
-                    <!-- Metas dinámicas -->
-                </div>
-                <div style="display: flex; gap: 6px; margin-top: 6px;">
-                    <input type="text" id="nuevaMetaInput" class="add-task-input" placeholder="Añadir nueva meta clave...">
+                <div id="metasContainer" style="margin-top: 4px;"></div>
+                <div style="display: flex; gap: 6px; margin-top: 4px;">
+                    <input type="text" id="nuevaMetaInput" class="add-task-input" placeholder="Añadir meta clave...">
                     <button class="retro-btn" onclick="addMeta()">Añadir</button>
                 </div>
             </div>
-            <strong>Seguimiento de Hábitos (L-M-Mi-J-V-S-D):</strong>
-            <div id="habitsContainer" style="margin-top: 6px;">
-                <!-- Hábitos dinámicos -->
-            </div>
+            <strong>Seguimiento de Hábitos:</strong>
+            <div id="habitsContainer" style="margin-top: 4px;"></div>
             <div style="display: flex; gap: 6px; margin-top: 6px;">
-                <input type="text" id="nuevoHabitoInput" class="add-task-input" placeholder="Nuevo hábito (ej: Programar 1h)...">
+                <input type="text" id="nuevoHabitoInput" class="add-task-input" placeholder="Nuevo hábito (ej: Estudiar)...">
                 <button class="retro-btn" onclick="addHabit()">Añadir Hábito</button>
             </div>
         </div>
@@ -401,20 +403,16 @@
         <div class="card span-4">
             <div class="card-title">
                 CALENDARIO MENSUAL
-                <span id="monthYearLabel" style="font-size: 10px; font-family: 'Press Start 2P', monospace;">SEP 2026</span>
+                <span id="monthYearLabel" style="font-size: 9px; font-family: 'Press Start 2P', monospace;">SEP 2026</span>
             </div>
-            <table class="calendar-table" id="calendarTable">
+            <table class="calendar-table">
                 <thead>
-                    <tr>
-                        <th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th>
-                    </tr>
+                    <tr><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th></tr>
                 </thead>
-                <tbody id="calendarBody">
-                    <!-- Dinámico -->
-                </tbody>
+                <tbody id="calendarBody"></tbody>
             </table>
-            <div style="font-size: 14px; margin-top: 8px; color: #4a6741; text-align: center;">
-                * Haz clic en un día para guardar tu horario, citas o cumpleaños.
+            <div style="font-size: 13px; margin-top: 6px; color: #4a6741; text-align: center;">
+                * Clic en un día para guardar horario, citas o cumples.
             </div>
         </div>
 
@@ -422,58 +420,36 @@
         <div class="card span-6">
             <div class="card-title">ASISTENTE VIRTUAL (HANA)</div>
             <div class="hana-container">
-                <div class="hana-sprite">🎧</div>
+                <div style="font-size: 36px; background:#b5c7a5; padding:10px; border-radius:50%; border:2px solid #4a6741;">🎧</div>
                 <div class="speech-bubble" id="hanaSpeech">
-                    «Hola. He sincronizado tu horario y hábitos. Vamos paso a paso hoy.»
+                    «¡Hola! Haz clic en mí en cualquier parte de la pantalla para conversar.»
                 </div>
-            </div>
-            <div style="text-align: right; margin-top: 8px;">
-                <button class="retro-btn" onclick="hablarHana()">Escuchar a Hana</button>
             </div>
         </div>
 
         <!-- REPRODUCTOR DE MÚSICA (6 cols) -->
         <div class="card span-6">
-            <div class="card-title">HANA'S PLAYLIST</div>
-            <div class="song-info" style="font-size: 20px; padding: 12px;">
+            <div class="card-title">HANA'S PLAYLIST (Lo-Fi Ambiance)</div>
+            <div style="font-size: 18px; padding: 6px;">
                 <strong>Artista:</strong> Lofi Fruits Music<br>
-                <strong>Reproduciendo:</strong> Coffee Shop Radio [Lo-Fi Beats 24/7]
+                <strong>Estado:</strong> Reproduciendo ambiente de estudio 24/7
             </div>
-            <div style="display: flex; justify-content: center; gap: 20px; font-size: 28px; margin-top: 12px; cursor: pointer;">
+            <div style="display: flex; justify-content: center; gap: 20px; font-size: 24px; margin-top: 6px; cursor: pointer;">
                 <span onclick="alert('⏮ Pista anterior')">⏮</span>
-                <span onclick="alert('▶ Reproduciendo música')">▶</span>
-                <span onclick="alert('⏸ Música pausada')">⏸</span>
+                <span onclick="alert('▶ Reproduciendo')">▶</span>
+                <span onclick="alert('⏸ Pausado')">⏸</span>
                 <span onclick="alert('⏭ Siguiente pista')">⏭</span>
-            </div>
-        </div>
-
-        <!-- NOTAS & PROYECTOS (12 cols) -->
-        <div class="card span-12">
-            <div class="card-title">NOTAS & PROYECTOS (Guardado Automático)</div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
-                <div class="sticky-note">
-                    <strong>Nota 1:</strong>
-                    <textarea class="sticky-textarea" id="note0" oninput="saveNotes()"></textarea>
-                </div>
-                <div class="sticky-note">
-                    <strong>Nota 2:</strong>
-                    <textarea class="sticky-textarea" id="note1" oninput="saveNotes()"></textarea>
-                </div>
-                <div class="sticky-note">
-                    <strong>Nota 3:</strong>
-                    <textarea class="sticky-textarea" id="note2" oninput="saveNotes()"></textarea>
-                </div>
             </div>
         </div>
 
     </div>
 </div>
 
-<!-- Modal para Eventos de Calendario -->
+<!-- Modal Eventos -->
 <div class="modal" id="eventModal">
     <div class="modal-content">
         <h3 id="modalDateTitle" style="font-family: 'Press Start 2P', monospace; font-size: 11px; margin-bottom: 10px; color: #2e4627;">Editar Día</h3>
-        <p style="font-size: 16px; margin-bottom: 6px;">Eventos (Horario, CUMPLE, citas):</p>
+        <p style="font-size: 16px; margin-bottom: 6px;">Horario, exámenes o cumpleaños:</p>
         <textarea id="modalEventInput" style="width:100%; height:80px; font-family:'VT323'; font-size:18px; padding:4px; border:1px solid #6b8e5f; background:#fff;"></textarea>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
             <button class="retro-btn" onclick="closeModal()">Cancelar</button>
@@ -483,61 +459,81 @@
 </div>
 
 <script>
-    // Estado global y LocalStorage
-    let currentWeekOffset = 0; // Semana actual
+    let currentWeekOffset = 0;
     const diasSemanaNombres = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
     
-    // Frases de Hana
     const frasesHana = [
-        "«Oye, ya llevas horas frente a la pantalla. Tómate un descanso.»",
-        "«Revisa tus pendientes de hoy, vas a terminar temprano si te concentras.»",
-        "«¿Escuchaste esa canción? Es mi favorita para programar.»",
-        "«No olvides registrar tus hábitos de hoy en el panel inferior.»",
-        "«Tranquila, paso a paso se llega lejos. ¡Tú puedes!»"
+        "«¡Ey! No olvides estirar las piernas un momento.»",
+        "«Vas excelente con tus tareas de la semana. ¡Sigue así!»",
+        "«¿Ya revisaste tu horario universitario en el calendario?»",
+        "«El éxito es la suma de pequeños esfuerzos diarios.»",
+        "«¡Ponle punche a tus proyectos de ingeniería!»"
     ];
 
-    function hablarHana() {
+    // Animación flotante de Hana por toda la pantalla
+    const mascot = document.getElementById('hanaMascot');
+    let posX = 50, posY = 50;
+    let velX = 1.2, velY = 0.9;
+
+    function animateHana() {
+        posX += velX;
+        posY += velY;
+        if (posX <= 10 || posX >= window.innerWidth - 70) velX *= -1;
+        if (posY <= 10 || posY >= window.innerHeight - 70) velY *= -1;
+        mascot.style.left = posX + 'px';
+        mascot.style.top = posY + 'px';
+        requestAnimationFrame(animateHana);
+    }
+    animateHana();
+
+    mascot.onclick = function() {
         const index = Math.floor(Math.random() * frasesHana.length);
         document.getElementById('hanaSpeech').innerText = frasesHana[index];
-    }
+    };
 
-    // Inicializar datos
-    let data = JSON.parse(localStorage.getItem('hana_dashboard_data')) || {
-        tasks: {}, // { "2026-W38-0": [{text: "...", done: false}] }
+    // Datos y LocalStorage
+    let data = JSON.parse(localStorage.getItem('hana_dashboard_v3')) || {
+        tasks: {},
         metas: ["Arquitectura de sistema", "Optimización de assets"],
         habits: [
             {name: "Ejercicio", days: [false, false, false, false, false, false, false]},
-            {name: "Lectura", days: [false, false, false, false, false, false, false]},
-            {name: "Meditación", days: [false, false, false, false, false, false, false]}
+            {name: "Lectura", days: [false, false, false, false, false, false, false]}
         ],
-        events: {}, // { "2026-09-17": "Examen Parcial / Cita" }
+        events: {},
         notes: ["Revisar documentación de API y endpoints.", "Actualizar dependencias de Python y Node.js.", "Agregar modo oscuro retro."]
     };
 
     function saveData() {
-        localStorage.setItem('hana_dashboard_data', JSON.stringify(data));
+        localStorage.setItem('hana_dashboard_v3', JSON.stringify(data));
     }
 
-    // --- PLAN SEMANAL ---
-    function getWeekString(offset) {
-        const now = new Date();
-        now.setDate(now.getDate() + (offset * 7));
-        const year = now.getFullYear();
-        // Calcular número de semana aproximado
-        const startOfYear = new Date(year, 0, 1);
-        const weekNum = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
-        return `${year}-W${weekNum}`;
+    // --- PLAN SEMANAL CON FECHAS ---
+    function getMonday(d, offset) {
+        d = new Date(d);
+        d.setDate(d.getDate() + (offset * 7));
+        var day = d.getDay(),
+            diff = d.getDate() - day + (day == 0 ? -6:1); // ajustar a lunes
+        return new Date(d.setDate(diff));
     }
 
     function renderWeek() {
-        const weekKey = getWeekString(currentWeekOffset);
-        document.getElementById('weekLabel').innerText = `Semana ${weekKey} (Año 2026)`;
-        
         const container = document.getElementById('weekGridContainer');
         container.innerHTML = '';
 
+        let monday = getMonday(new Date(), currentWeekOffset);
+        document.getElementById('weekLabel').innerText = `Semana del ${monday.getDate()} de Septiembre en adelante`;
+
         for (let i = 0; i < 7; i++) {
-            const dayKey = `${weekKey}-${i}`;
+            let currentDayDate = new Date(monday);
+            currentDayDate.setDate(monday.getDate() + i);
+            let dayNum = currentDayDate.getDate();
+            let monthName = currentDayDate.toLocaleString('es', { month: 'short' });
+            
+            let year = currentDayDate.getFullYear();
+            let month = String(currentDayDate.getMonth() + 1).padStart(2, '0');
+            let dayStr = String(dayNum).padStart(2, '0');
+            let dayKey = `${year}-${month}-${dayStr}`;
+
             if (!data.tasks[dayKey]) data.tasks[dayKey] = [];
 
             const dayBox = document.createElement('div');
@@ -557,7 +553,7 @@
             });
 
             dayBox.innerHTML = `
-                <div class="day-header dh-${i}">${diasSemanaNombres[i]}</div>
+                <div class="day-header dh-${i}">${diasSemanaNombres[i]} ${dayNum}</div>
                 <ul class="task-list">${tasksHtml}</ul>
                 <div class="add-task-form">
                     <input type="text" id="taskInput-${dayKey}" class="add-task-input" placeholder="Nueva tarea...">
@@ -568,74 +564,65 @@
         }
     }
 
-    function changeWeek(direction) {
-        currentWeekOffset += direction;
+    function changeWeek(dir) {
+        currentWeekOffset += dir;
         renderWeek();
     }
 
     function addTask(dayKey) {
         const input = document.getElementById(`taskInput-${dayKey}`);
-        if (input.value.trim() === '') return;
+        if (!input.value.trim()) return;
         if (!data.tasks[dayKey]) data.tasks[dayKey] = [];
         data.tasks[dayKey].push({ text: input.value.trim(), done: false });
         saveData();
         renderWeek();
     }
 
-    function deleteTask(dayKey, index) {
-        data.tasks[dayKey].splice(index, 1);
+    function deleteTask(dayKey, idx) {
+        data.tasks[dayKey].splice(idx, 1);
         saveData();
         renderWeek();
     }
 
-    function toggleTask(dayKey, index) {
-        data.tasks[dayKey][index].done = !data.tasks[dayKey][index].done;
+    function toggleTask(dayKey, idx) {
+        data.tasks[dayKey][idx].done = !data.tasks[dayKey][idx].done;
         saveData();
         renderWeek();
     }
 
     function resetCurrentWeek() {
-        const weekKey = getWeekString(currentWeekOffset);
-        for (let i = 0; i < 7; i++) {
-            data.tasks[`${weekKey}-${i}`] = [];
-        }
-        saveData();
         renderWeek();
     }
 
     // --- METAS Y HÁBITOS ---
     function renderMetasAndHabits() {
-        // Metas
         const metasContainer = document.getElementById('metasContainer');
         metasContainer.innerHTML = '';
         data.metas.forEach((meta, idx) => {
             metasContainer.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
                     <span>• ${meta}</span>
                     <button class="task-delete" onclick="deleteMeta(${idx})">×</button>
                 </div>
             `;
         });
 
-        // Hábitos
         const habitsContainer = document.getElementById('habitsContainer');
         habitsContainer.innerHTML = '';
         data.habits.forEach((habit, hIdx) => {
-            let daysHtml = '';
-            let completedCount = 0;
+            let daysHtml = '', completed = 0;
             habit.days.forEach((isChecked, dIdx) => {
-                if (isChecked) completedCount++;
+                if (isChecked) completed++;
                 daysHtml += `<div class="habit-day-box ${isChecked ? 'active' : ''}" onclick="toggleHabitDay(${hIdx}, ${dIdx})">${diasSemanaNombres[dIdx][0]}</div>`;
             });
-            const percent = Math.round((completedCount / 7) * 100);
-
+            let percent = Math.round((completed / 7) * 100);
             habitsContainer.innerHTML += `
                 <div class="habit-row">
-                    <div style="width:90px; overflow:hidden; text-overflow:ellipsis;">${habit.name}</div>
+                    <div style="width:80px; overflow:hidden;">${habit.name}</div>
                     <div class="habit-days">${daysHtml}</div>
                     <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%;"></div></div>
-                    <span style="font-size:14px; margin-left:6px;">${percent}%</span>
-                    <button class="task-delete" style="margin-left:6px;" onclick="deleteHabit(${hIdx})">×</button>
+                    <span style="font-size:13px; margin-left:4px;">${percent}%</span>
+                    <button class="task-delete" style="margin-left:4px;" onclick="deleteHabit(${hIdx})">×</button>
                 </div>
             `;
         });
@@ -643,34 +630,23 @@
 
     function addMeta() {
         const input = document.getElementById('nuevaMetaInput');
-        if (input.value.trim() === '') return;
+        if (!input.value.trim()) return;
         data.metas.push(input.value.trim());
         input.value = '';
         saveData();
         renderMetasAndHabits();
     }
-
-    function deleteMeta(idx) {
-        data.metas.splice(idx, 1);
-        saveData();
-        renderMetasAndHabits();
-    }
+    function deleteMeta(idx) { data.metas.splice(idx, 1); saveData(); renderMetasAndHabits(); }
 
     function addHabit() {
         const input = document.getElementById('nuevoHabitoInput');
-        if (input.value.trim() === '') return;
+        if (!input.value.trim()) return;
         data.habits.push({ name: input.value.trim(), days: [false, false, false, false, false, false, false] });
         input.value = '';
         saveData();
         renderMetasAndHabits();
     }
-
-    function deleteHabit(idx) {
-        data.habits.splice(idx, 1);
-        saveData();
-        renderMetasAndHabits();
-    }
-
+    function deleteHabit(idx) { data.habits.splice(idx, 1); saveData(); renderMetasAndHabits(); }
     function toggleHabitDay(hIdx, dIdx) {
         data.habits[hIdx].days[dIdx] = !data.habits[hIdx].days[dIdx];
         saveData();
@@ -679,35 +655,22 @@
 
     // --- CALENDARIO MENSUAL ---
     let selectedDateKey = '';
-
     function renderCalendar() {
         const tbody = document.getElementById('calendarBody');
         tbody.innerHTML = '';
-        
-        // Septiembre 2026 (mes actual según contexto)
-        // 2026-09 empieza en martes (índice 1 en lunes-first)
-        let dateObj = new Date(2026, 8, 1); // 8 es Septiembre
-        let daysInMonth = 30;
-        let startDay = 1; // Lunes = 0, Martes = 1...
-
+        let dayCounter = 1, daysInMonth = 30, startDay = 1; // Septiembre 2026
         let row = document.createElement('tr');
-        let dayCounter = 1;
 
-        // Días previos de relleno (agosto)
-        for (let i = 0; i < startDay; i++) {
-            row.innerHTML += `<td class="muted">${31 - (startDay - i - 1)}</td>`;
-        }
-
+        for (let i = 0; i < startDay; i++) row.innerHTML += `<td class="muted">${31 - (startDay - i - 1)}</td>`;
         for (let i = startDay; i < 7; i++) {
             let dateStr = `2026-09-${dayCounter < 10 ? '0'+dayCounter : dayCounter}`;
             let hasEv = data.events[dateStr] ? 'has-event' : '';
-            let isToday = (dayCounter === 17) ? 'today' : ''; // 17 de Septiembre 2026
+            let isToday = (dayCounter === 17) ? 'today' : '';
             row.innerHTML += `<td class="${isToday} ${hasEv}" onclick="openModal('${dateStr}')">${dayCounter}</td>`;
             dayCounter++;
         }
         tbody.appendChild(row);
 
-        // Resto de semanas
         while (dayCounter <= daysInMonth) {
             row = document.createElement('tr');
             for (let i = 0; i < 7; i++) {
@@ -718,8 +681,7 @@
                     row.innerHTML += `<td class="${isToday} ${hasEv}" onclick="openModal('${dateStr}')">${dayCounter}</td>`;
                     dayCounter++;
                 } else {
-                    let nextMonthDay = dayCounter - daysInMonth;
-                    row.innerHTML += `<td class="muted">${nextMonthDay}</td>`;
+                    row.innerHTML += `<td class="muted">${dayCounter - daysInMonth}</td>`;
                     dayCounter++;
                 }
             }
@@ -733,18 +695,11 @@
         document.getElementById('modalEventInput').value = data.events[dateStr] || '';
         document.getElementById('eventModal').style.display = 'flex';
     }
-
-    function closeModal() {
-        document.getElementById('eventModal').style.display = 'none';
-    }
-
+    function closeModal() { document.getElementById('eventModal').style.display = 'none'; }
     function saveEvent() {
         const val = document.getElementById('modalEventInput').value.trim();
-        if (val) {
-            data.events[selectedDateKey] = val;
-        } else {
-            delete data.events[selectedDateKey];
-        }
+        if (val) data.events[selectedDateKey] = val;
+        else delete data.events[selectedDateKey];
         saveData();
         closeModal();
         renderCalendar();
@@ -752,19 +707,13 @@
 
     // --- NOTAS ---
     function renderNotes() {
-        for (let i = 0; i < 3; i++) {
-            document.getElementById(`note${i}`).value = data.notes[i] || '';
-        }
+        for (let i = 0; i < 3; i++) document.getElementById(`note${i}`).value = data.notes[i] || '';
     }
-
     function saveNotes() {
-        for (let i = 0; i < 3; i++) {
-            data.notes[i] = document.getElementById(`note${i}`).value;
-        }
+        for (let i = 0; i < 3; i++) data.notes[i] = document.getElementById(`note${i}`).value;
         saveData();
     }
 
-    // Inicialización al cargar
     window.onload = function() {
         renderWeek();
         renderMetasAndHabits();
