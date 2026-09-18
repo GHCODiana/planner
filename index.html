@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Centro de Mando - Hana Dashboard v3.0</title>
+    <title>Centro de Mando - Hana.OS v4.0 (Trinket Girlies Palette)</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
     <style>
         * {
@@ -11,31 +11,31 @@
             padding: 0;
         }
         body {
-            background-color: #f7f3e8;
+            background-color: #fceee9; /* Fondo crema suave */
             background-image: 
-                linear-gradient(to right, #ece4d0 1px, transparent 1px),
-                linear-gradient(to bottom, #ece4d0 1px, transparent 1px);
+                linear-gradient(to right, #f2ded6 1px, transparent 1px),
+                linear-gradient(to bottom, #f2ded6 1px, transparent 1px);
             background-size: 20px 20px;
             font-family: 'VT323', monospace;
-            color: #2b3a2a;
+            color: #3b3038;
             padding: 20px;
             min-height: 100vh;
         }
         .window {
-            background: #e2ebd8;
-            border: 3px solid #4a6741;
-            border-radius: 8px;
-            box-shadow: 4px 4px 0px #b5c7a5;
+            background: #fcf6f5; /* Blanco rosa pastel */
+            border: 3px solid #d48395; /* Rosa frambuesa/trinket */
+            border-radius: 10px;
+            box-shadow: 5px 5px 0px #b56576;
             max-width: 1400px;
             margin: 0 auto;
             overflow: hidden;
         }
         .title-bar {
-            background: #4a6741;
+            background: #d48395;
             color: #fff;
-            padding: 8px 12px;
+            padding: 10px 14px;
             font-family: 'Press Start 2P', monospace;
-            font-size: 12px;
+            font-size: 11px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -44,9 +44,10 @@
             display: inline-block;
             width: 12px;
             height: 12px;
-            background: #b5c7a5;
-            border: 1px solid #2b3a2a;
+            background: #f7c5cc;
+            border: 1px solid #3b3038;
             margin-left: 4px;
+            border-radius: 50%;
         }
         .dashboard-grid {
             padding: 20px;
@@ -55,18 +56,18 @@
             gap: 16px;
         }
         .card {
-            background: #cfe2c3;
-            border: 2px solid #55774a;
-            border-radius: 6px;
+            background: #fff0f2; /* Rosa muy pálido */
+            border: 2px solid #e09fbe;
+            border-radius: 8px;
             padding: 14px;
-            box-shadow: 2px 2px 0px #9cb88b;
+            box-shadow: 2px 2px 0px #f2c6d9;
         }
         .card-title {
             font-family: 'Press Start 2P', monospace;
-            font-size: 12px;
-            color: #2e4627;
+            font-size: 11px;
+            color: #794056;
             margin-bottom: 12px;
-            border-bottom: 2px dashed #7a9c6d;
+            border-bottom: 2px dashed #d48395;
             padding-bottom: 6px;
             display: flex;
             justify-content: space-between;
@@ -89,23 +90,23 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            background: #eaf2e3;
+            background: #fae1dd;
             padding: 6px 10px;
-            border: 1px solid #6b8e5f;
-            border-radius: 4px;
+            border: 1px solid #e09fbe;
+            border-radius: 6px;
             font-size: 20px;
         }
         .retro-btn {
-            background: #7a9c6d;
+            background: #b56576;
             color: white;
-            border: 1px solid #4a6741;
+            border: 1px solid #794056;
             font-family: 'VT323', monospace;
             font-size: 18px;
-            padding: 2px 10px;
+            padding: 3px 10px;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 4px;
         }
-        .retro-btn:hover { background: #5f7d54; }
+        .retro-btn:hover { background: #924d5b; }
 
         /* Plan Semanal con Fechas */
         .week-grid-large {
@@ -117,13 +118,13 @@
             .week-grid-large { grid-template-columns: repeat(4, 1fr); }
         }
         .day-box-large {
-            background: #eaf2e3;
-            border: 1.5px solid #6b8e5f;
-            border-radius: 4px;
+            background: #fff;
+            border: 1.5px solid #e09fbe;
+            border-radius: 6px;
             padding: 8px;
             display: flex;
             flex-direction: column;
-            min-height: 240px;
+            min-height: 250px;
         }
         .day-header {
             font-family: 'Press Start 2P', monospace;
@@ -131,23 +132,24 @@
             margin-bottom: 6px;
             padding: 4px;
             text-align: center;
-            border-radius: 2px;
+            border-radius: 3px;
             color: #fff;
         }
-        .dh-0 { background-color: #d17b88; }
-        .dh-1 { background-color: #c76b5c; }
-        .dh-2 { background-color: #5c888d; }
-        .dh-3 { background-color: #7b9c6d; }
-        .dh-4 { background-color: #9b7bb5; }
-        .dh-5 { background-color: #b59b7b; }
-        .dh-6 { background-color: #d19b7b; }
+        /* Colores de días basados en paleta denim/rosa/azul */
+        .dh-0 { background-color: #b56576; } /* Lunes */
+        .dh-1 { background-color: #6d597a; } /* Martes */
+        .dh-2 { background-color: #355070; } /* Miércoles */
+        .dh-3 { background-color: #457b9d; } /* Jueves */
+        .dh-4 { background-color: #e56b6f; } /* Viernes */
+        .dh-5 { background-color: #eaac8b; color: #3b3038 !important; } /* Sábado */
+        .dh-6 { background-color: #b5838d; } /* Domingo */
 
         .task-list {
             list-style: none;
             font-size: 16px;
             flex-grow: 1;
             overflow-y: auto;
-            max-height: 150px;
+            max-height: 160px;
             margin-bottom: 6px;
         }
         .task-item {
@@ -155,21 +157,23 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 4px;
-            background: rgba(255,255,255,0.6);
+            background: #fdf2f4;
             padding: 2px 4px;
-            border-radius: 2px;
+            border-radius: 3px;
+            border-left: 3px solid #b56576;
         }
         .task-item input[type="checkbox"] { margin-right: 4px; cursor: pointer; }
-        .task-delete { color: #c76b5c; cursor: pointer; font-weight: bold; font-size: 14px; border: none; background: none; }
+        .task-delete { color: #b56576; cursor: pointer; font-weight: bold; font-size: 14px; border: none; background: none; }
         .add-task-form { display: flex; gap: 4px; }
         .add-task-input {
             width: 100%;
             font-family: 'VT323', monospace;
-            font-size: 14px;
-            padding: 2px 4px;
-            border: 1px solid #6b8e5f;
+            font-size: 15px;
+            padding: 2px 6px;
+            border: 1px solid #e09fbe;
             background: #fff;
-            border-radius: 2px;
+            border-radius: 3px;
+            color: #3b3038;
         }
 
         /* Calendario Mensual */
@@ -182,35 +186,35 @@
         .calendar-table th {
             font-family: 'Press Start 2P', monospace;
             font-size: 8px;
-            background: #b5c7a5;
-            color: #2b3a2a;
-            padding: 4px;
-            border: 1px solid #7a9c6d;
+            background: #e09fbe;
+            color: #fff;
+            padding: 5px;
+            border: 1px solid #d48395;
         }
         .calendar-table td {
-            border: 1px solid #9cb88b;
+            border: 1px solid #f2c6d9;
             padding: 5px;
-            background: #eaf2e3;
+            background: #fff;
             cursor: pointer;
             height: 32px;
             vertical-align: top;
             position: relative;
         }
-        .calendar-table td:hover { background: #d3e2c7; }
+        .calendar-table td:hover { background: #fae1dd; }
         .calendar-table td.today {
-            background: #d17b88;
+            background: #b56576;
             color: #fff;
             font-weight: bold;
         }
-        .calendar-table td.muted { color: #8fa385; }
+        .calendar-table td.muted { color: #c8b6bc; }
         .has-event::after {
             content: '';
             position: absolute;
             bottom: 2px;
             right: 2px;
-            width: 5px;
-            height: 5px;
-            background: #5c888d;
+            width: 6px;
+            height: 6px;
+            background: #355070;
             border-radius: 50%;
         }
 
@@ -221,10 +225,10 @@
             justify-content: space-between;
             font-size: 16px;
             margin-bottom: 6px;
-            background: #eaf2e3;
+            background: #fff;
             padding: 4px 8px;
-            border-radius: 4px;
-            border: 1px solid #6b8e5f;
+            border-radius: 5px;
+            border: 1px solid #e09fbe;
         }
         .habit-days { display: flex; gap: 3px; }
         .habit-day-box {
@@ -234,32 +238,32 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fff;
-            border: 1px solid #7a9c6d;
+            background: #fdf2f4;
+            border: 1px solid #d48395;
             cursor: pointer;
             border-radius: 2px;
         }
         .habit-day-box.active {
-            background: #d17b88;
+            background: #b56576;
             color: white;
-            border-color: #a0505d;
+            border-color: #794056;
         }
         .progress-bar {
-            background: #b5c7a5;
-            border: 1px solid #55774a;
+            background: #fae1dd;
+            border: 1px solid #e09fbe;
             height: 10px;
             border-radius: 3px;
             overflow: hidden;
             flex-grow: 1;
             margin-left: 8px;
         }
-        .progress-fill { background: #d17b88; height: 100%; width: 0%; }
+        .progress-fill { background: #b56576; height: 100%; width: 0%; }
 
-        /* Asistente y Música */
+        /* Asistente */
         .hana-container { display: flex; align-items: center; gap: 12px; }
         .speech-bubble {
             background: #fff;
-            border: 2px solid #4a6741;
+            border: 2px solid #b56576;
             border-radius: 8px;
             padding: 8px;
             font-size: 17px;
@@ -268,16 +272,12 @@
         }
 
         /* Notas Verticales a la Derecha */
-        .notes-column {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .notes-column { display: flex; flex-direction: column; gap: 10px; }
         .sticky-note {
-            background: #f7e1d7;
-            border: 1.5px dashed #c76b5c;
+            background: #fae1dd;
+            border: 1.5px dashed #b56576;
             padding: 8px;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 16px;
         }
         .sticky-textarea {
@@ -288,23 +288,23 @@
             font-family: 'VT323', monospace;
             font-size: 16px;
             resize: none;
-            color: #2b3a2a;
+            color: #3b3038;
             outline: none;
         }
 
-        /* HANOID: Avatar Animado Flotante en Pantalla */
+        /* Avatar Animado Flotante */
         #hanaMascot {
             position: fixed;
             width: 55px;
             height: 55px;
-            background: #d17b88;
-            border: 2px solid #4a6741;
+            background: #b56576;
+            border: 2px solid #794056;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 26px;
-            box-shadow: 2px 2px 0px #4a6741;
+            box-shadow: 2px 2px 0px #355070;
             cursor: pointer;
             z-index: 9999;
             user-select: none;
@@ -323,34 +323,36 @@
             z-index: 10000;
         }
         .modal-content {
-            background: #e2ebd8;
-            border: 3px solid #4a6741;
+            background: #fcf6f5;
+            border: 3px solid #b56576;
             padding: 20px;
-            border-radius: 6px;
-            width: 320px;
-            font-size: 20px;
+            border-radius: 8px;
+            width: 340px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
 
-<!-- Avatar Animado de Hana que se mueve por toda la pantalla -->
-<div id="hanaMascot" title="¡Hola! Soy Hana, haz clic para hablar conmigo">🎧</div>
+<div id="hanaMascot" title="¡Hola! Clic para hablar con Hana">🍓</div>
 
 <div class="window">
     <div class="title-bar">
-        <span>CENTRO DE MANDO // HANA.OS v3.0</span>
-        <div class="window-controls">
-            <span></span><span></span><span></span>
+        <span>CENTRO DE MANDO // HANA.OS v4.0 (Trinket Girlies Edition)</span>
+        <div style="display:flex; gap:6px; align-items:center;">
+            <button class="retro-btn" style="font-size:12px; padding:2px 6px;" onclick="exportData()">💾 Guardar Respaldo</button>
+            <div class="window-controls">
+                <span></span><span></span><span></span>
+            </div>
         </div>
     </div>
     
     <div class="dashboard-grid">
         
-        <!-- PLAN SEMANAL AMPLIADO CON FECHAS (9 cols) -->
+        <!-- PLAN SEMANAL (9 cols) -->
         <div class="card span-9">
             <div class="card-title">
-                PLAN SEMANAL (CON FECHAS)
+                PLAN SEMANAL & HORARIO UNIVERSITARIO
                 <button class="retro-btn" onclick="resetCurrentWeek()">Limpiar Semana</button>
             </div>
             <div class="week-nav">
@@ -361,7 +363,7 @@
             <div class="week-grid-large" id="weekGridContainer"></div>
         </div>
 
-        <!-- NOTAS & PROYECTOS (3 cols - A LA DERECHA) -->
+        <!-- NOTAS & PROYECTOS (3 cols - Derecha) -->
         <div class="card span-3">
             <div class="card-title">NOTAS & PROYECTOS</div>
             <div class="notes-column">
@@ -380,11 +382,11 @@
             </div>
         </div>
 
-        <!-- PRODUCTIVIDAD & HÁBITOS 7 DÍAS (8 cols) -->
+        <!-- PRODUCTIVIDAD & HÁBITOS (8 cols) -->
         <div class="card span-8">
             <div class="card-title">PRODUCTIVIDAD & HÁBITOS (7 DÍAS)</div>
             <div style="margin-bottom: 10px; font-size: 17px;">
-                <strong>Metas Clave de la Semana:</strong>
+                <strong>Metas Clave:</strong>
                 <div id="metasContainer" style="margin-top: 4px;"></div>
                 <div style="display: flex; gap: 6px; margin-top: 4px;">
                     <input type="text" id="nuevaMetaInput" class="add-task-input" placeholder="Añadir meta clave...">
@@ -394,12 +396,12 @@
             <strong>Seguimiento de Hábitos:</strong>
             <div id="habitsContainer" style="margin-top: 4px;"></div>
             <div style="display: flex; gap: 6px; margin-top: 6px;">
-                <input type="text" id="nuevoHabitoInput" class="add-task-input" placeholder="Nuevo hábito (ej: Estudiar)...">
+                <input type="text" id="nuevoHabitoInput" class="add-task-input" placeholder="Nuevo hábito (ej: Programar)...">
                 <button class="retro-btn" onclick="addHabit()">Añadir Hábito</button>
             </div>
         </div>
 
-        <!-- CALENDARIO MENSUAL CON EVENTOS (4 cols) -->
+        <!-- CALENDARIO MENSUAL (4 cols) -->
         <div class="card span-4">
             <div class="card-title">
                 CALENDARIO MENSUAL
@@ -411,34 +413,34 @@
                 </thead>
                 <tbody id="calendarBody"></tbody>
             </table>
-            <div style="font-size: 13px; margin-top: 6px; color: #4a6741; text-align: center;">
-                * Clic en un día para guardar horario, citas o cumples.
+            <div style="font-size: 13px; margin-top: 6px; color: #794056; text-align: center;">
+                * Clic en un día para ver o añadir eventos y citas.
             </div>
         </div>
 
-        <!-- ASISTENTE VIRTUAL HANA (6 cols) -->
+        <!-- ASISTENTE VIRTUAL (6 cols) -->
         <div class="card span-6">
             <div class="card-title">ASISTENTE VIRTUAL (HANA)</div>
             <div class="hana-container">
-                <div style="font-size: 36px; background:#b5c7a5; padding:10px; border-radius:50%; border:2px solid #4a6741;">🎧</div>
+                <div style="font-size: 34px; background:#fae1dd; padding:10px; border-radius:50%; border:2px solid #b56576;">🍓</div>
                 <div class="speech-bubble" id="hanaSpeech">
-                    «¡Hola! Haz clic en mí en cualquier parte de la pantalla para conversar.»
+                    «¡Hola! He integrado tu horario universitario completo en los días correspondientes. ¡Mucho éxito!»
                 </div>
             </div>
         </div>
 
         <!-- REPRODUCTOR DE MÚSICA (6 cols) -->
         <div class="card span-6">
-            <div class="card-title">HANA'S PLAYLIST (Lo-Fi Ambiance)</div>
+            <div class="card-title">HANA'S PLAYLIST (Trinket Vibes)</div>
             <div style="font-size: 18px; padding: 6px;">
                 <strong>Artista:</strong> Lofi Fruits Music<br>
-                <strong>Estado:</strong> Reproduciendo ambiente de estudio 24/7
+                <strong>Estado:</strong> Sonando beats suaves para programar
             </div>
             <div style="display: flex; justify-content: center; gap: 20px; font-size: 24px; margin-top: 6px; cursor: pointer;">
                 <span onclick="alert('⏮ Pista anterior')">⏮</span>
                 <span onclick="alert('▶ Reproduciendo')">▶</span>
                 <span onclick="alert('⏸ Pausado')">⏸</span>
-                <span onclick="alert('⏭ Siguiente pista')">⏭</span>
+                <span onclick="alert('⏭ Siguiente')">⏭</span>
             </div>
         </div>
 
@@ -448,12 +450,12 @@
 <!-- Modal Eventos -->
 <div class="modal" id="eventModal">
     <div class="modal-content">
-        <h3 id="modalDateTitle" style="font-family: 'Press Start 2P', monospace; font-size: 11px; margin-bottom: 10px; color: #2e4627;">Editar Día</h3>
-        <p style="font-size: 16px; margin-bottom: 6px;">Horario, exámenes o cumpleaños:</p>
-        <textarea id="modalEventInput" style="width:100%; height:80px; font-family:'VT323'; font-size:18px; padding:4px; border:1px solid #6b8e5f; background:#fff;"></textarea>
+        <h3 id="modalDateTitle" style="font-family: 'Press Start 2P', monospace; font-size: 11px; margin-bottom: 10px; color: #794056;">Editar Día</h3>
+        <p style="font-size: 16px; margin-bottom: 6px;">Eventos, citas o notas del día:</p>
+        <textarea id="modalEventInput" style="width:100%; height:80px; font-family:'VT323'; font-size:18px; padding:6px; border:1px solid #e09fbe; background:#fff; color:#3b3038;"></textarea>
         <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
             <button class="retro-btn" onclick="closeModal()">Cancelar</button>
-            <button class="retro-btn" style="background:#d17b88;" onclick="saveEvent()">Guardar</button>
+            <button class="retro-btn" onclick="saveEvent()">Guardar</button>
         </div>
     </div>
 </div>
@@ -462,18 +464,28 @@
     let currentWeekOffset = 0;
     const diasSemanaNombres = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
     
+    // Horario universitario predeterminado basado en tu imagen (se inyecta si la semana está vacía)
+    const horarioUniversidad = {
+        0: ["SIST. OPE. 10am-1pm", "EDA 2-5pm", "EST. APL. 7-10pm"], // Lunes
+        1: ["SIST. INTE. 7-10am", "ING. PRO. 8-10pm"],              // Martes
+        2: ["SIST. OPE. 10am-1pm", "ING. SOFT. 4-6pm"],              // Miércoles
+        3: ["EDA 2-5pm", "EST. APL. 8-10pm"],                       // Jueves
+        4: ["SIST. INTE. 7-9am", "ING. SOFT. 3-6pm", "ING. PRO. 8-10pm"], // Viernes
+        5: [],                                                      // Sábado
+        6: []                                                       // Domingo
+    };
+
     const frasesHana = [
-        "«¡Ey! No olvides estirar las piernas un momento.»",
-        "«Vas excelente con tus tareas de la semana. ¡Sigue así!»",
-        "«¿Ya revisaste tu horario universitario en el calendario?»",
-        "«El éxito es la suma de pequeños esfuerzos diarios.»",
-        "«¡Ponle punche a tus proyectos de ingeniería!»"
+        "«¡Recuerda revisar tus bloques de SIST. OPE y EDA esta semana!»",
+        "«El estilo 'Trinket Girlies' le da una vibra hermosa a tu código.»",
+        "«Tómate un respiro con un café o un snack rico.»",
+        "«¡Tú puedes con todas tus entregas de sistemas!»"
     ];
 
-    // Animación flotante de Hana por toda la pantalla
+    // Animación flotante de Hana
     const mascot = document.getElementById('hanaMascot');
-    let posX = 50, posY = 50;
-    let velX = 1.2, velY = 0.9;
+    let posX = 60, posY = 60;
+    let velX = 1.1, velY = 0.8;
 
     function animateHana() {
         posX += velX;
@@ -491,8 +503,8 @@
         document.getElementById('hanaSpeech').innerText = frasesHana[index];
     };
 
-    // Datos y LocalStorage
-    let data = JSON.parse(localStorage.getItem('hana_dashboard_v3')) || {
+    // Datos y LocalStorage con llave fija para no perder memoria
+    let data = JSON.parse(localStorage.getItem('hana_dashboard_v4')) || {
         tasks: {},
         metas: ["Arquitectura de sistema", "Optimización de assets"],
         habits: [
@@ -500,19 +512,29 @@
             {name: "Lectura", days: [false, false, false, false, false, false, false]}
         ],
         events: {},
-        notes: ["Revisar documentación de API y endpoints.", "Actualizar dependencias de Python y Node.js.", "Agregar modo oscuro retro."]
+        notes: ["Revisar documentación de API y endpoints.", "Actualizar dependencias de Python y Node.js.", "Preparar dashboards en Power BI."]
     };
 
     function saveData() {
-        localStorage.setItem('hana_dashboard_v3', JSON.stringify(data));
+        localStorage.setItem('hana_dashboard_v4', JSON.stringify(data));
     }
 
-    // --- PLAN SEMANAL CON FECHAS ---
+    function exportData() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "hana_mando_backup.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+    }
+
+    // --- PLAN SEMANAL CON HORARIO ---
     function getMonday(d, offset) {
         d = new Date(d);
         d.setDate(d.getDate() + (offset * 7));
         var day = d.getDay(),
-            diff = d.getDate() - day + (day == 0 ? -6:1); // ajustar a lunes
+            diff = d.getDate() - day + (day == 0 ? -6:1);
         return new Date(d.setDate(diff));
     }
 
@@ -527,14 +549,16 @@
             let currentDayDate = new Date(monday);
             currentDayDate.setDate(monday.getDate() + i);
             let dayNum = currentDayDate.getDate();
-            let monthName = currentDayDate.toLocaleString('es', { month: 'short' });
             
             let year = currentDayDate.getFullYear();
             let month = String(currentDayDate.getMonth() + 1).padStart(2, '0');
             let dayStr = String(dayNum).padStart(2, '0');
             let dayKey = `${year}-${month}-${dayStr}`;
 
-            if (!data.tasks[dayKey]) data.tasks[dayKey] = [];
+            // Si no hay tareas para este día, inyectamos automáticamente las clases de tu horario universitario
+            if (!data.tasks[dayKey]) {
+                data.tasks[dayKey] = (horarioUniversidad[i] || []).map(curso => ({ text: `📚 ${curso}`, done: false }));
+            }
 
             const dayBox = document.createElement('div');
             dayBox.className = 'day-box-large';
@@ -545,7 +569,7 @@
                     <li class="task-item">
                         <label style="display:flex; align-items:center; word-break:break-all;">
                             <input type="checkbox" ${t.done ? 'checked' : ''} onclick="toggleTask('${dayKey}', ${idx})">
-                            <span style="${t.done ? 'text-decoration: line-through; color: #778a70;' : ''}">${t.text}</span>
+                            <span style="${t.done ? 'text-decoration: line-through; color: #a08c95;' : ''}">${t.text}</span>
                         </label>
                         <button class="task-delete" onclick="deleteTask('${dayKey}', ${idx})">×</button>
                     </li>
@@ -556,7 +580,7 @@
                 <div class="day-header dh-${i}">${diasSemanaNombres[i]} ${dayNum}</div>
                 <ul class="task-list">${tasksHtml}</ul>
                 <div class="add-task-form">
-                    <input type="text" id="taskInput-${dayKey}" class="add-task-input" placeholder="Nueva tarea...">
+                    <input type="text" id="taskInput-${dayKey}" class="add-task-input" placeholder="Añadir...">
                     <button class="retro-btn" onclick="addTask('${dayKey}')">+</button>
                 </div>
             `;
@@ -658,7 +682,7 @@
     function renderCalendar() {
         const tbody = document.getElementById('calendarBody');
         tbody.innerHTML = '';
-        let dayCounter = 1, daysInMonth = 30, startDay = 1; // Septiembre 2026
+        let dayCounter = 1, daysInMonth = 30, startDay = 1;
         let row = document.createElement('tr');
 
         for (let i = 0; i < startDay; i++) row.innerHTML += `<td class="muted">${31 - (startDay - i - 1)}</td>`;
