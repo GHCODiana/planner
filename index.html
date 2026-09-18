@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Centro de Mando - Hana Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f7f3e8;
+            background-image: 
+                linear-gradient(to right, #ece4d0 1px, transparent 1px),
+                linear-gradient(to bottom, #ece4d0 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: 'VT323', monospace;
+            color: #2b3a2a;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .window {
+            background: #e2ebd8;
+            border: 3px solid #4a6741;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px #b5c7a5;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        .title-bar {
+            background: #4a6741;
+            color: #fff;
+            padding: 8px 12px;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .window-controls span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #b5c7a5;
+            border: 1px solid #2b3a2a;
+            margin-left: 4px;
+        }
+        .dashboard-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+        .card {
+            background: #cfe2c3;
+            border: 2px solid #55774a;
+            border-radius: 6px;
+            padding: 14px;
+            box-shadow: 2px 2px 0px #9cb88b;
+        }
+        .card-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 13px;
+            color: #2e4627;
+            margin-bottom: 12px;
+            border-bottom: 2px dashed #7a9c6d;
+            padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .span-8 { grid-column: span 8; }
+        .span-4 { grid-column: span 4; }
+        .span-12 { grid-column: span 12; }
+
+        /* Plan Semanal */
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .day-box {
+            background: #eaf2e3;
+            border: 1.5px solid #6b8e5f;
+            border-radius: 4px;
+            padding: 8px;
+            font-size: 18px;
+        }
+        .day-box h4 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 10px;
+            margin-bottom: 6px;
+            padding: 3px;
+            text-align: center;
+            border-radius: 2px;
+            color: #fff;
+        }
+        .day-lunes { background-color: #d17b88; }
+        .day-martes { background-color: #c76b5c; }
+        .day-miercoles { background-color: #5c888d; }
+        .day-jueves { background-color: #7b9c6d; }
+        .day-viernes { background-color: #9b7bb5; }
+        .day-sabado { background-color: #b59b7b; }
+        .day-domingo { background-color: #d19b7b; }
+
+        .day-box ul {
+            list-style: none;
+            font-size: 16px;
+        }
+        .day-box li {
+            margin-bottom: 3px;
+        }
+
+        /* Calendario Mensual */
+        .calendar-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 18px;
+        }
+        .calendar-table th {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 9px;
+            background: #b5c7a5;
+            color: #2b3a2a;
+            padding: 4px;
+            border: 1px solid #7a9c6d;
+        }
+        .calendar-table td {
+            border: 1px solid #9cb88b;
+            padding: 6px;
+            background: #eaf2e3;
+        }
+        .calendar-table td.today {
+            background: #d17b88;
+            color: #fff;
+            font-weight: bold;
+        }
+        .calendar-table td.muted {
+            color: #8fa385;
+        }
+
+        /* Hábitos */
+        .habit-item {
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+        .progress-bar {
+            background: #b5c7a5;
+            border: 1px solid #55774a;
+            height: 14px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+        .progress-fill {
+            background: #d17b88;
+            height: 100%;
+        }
+
+        /* Asistente */
+        .hana-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .hana-sprite {
+            width: 90px;
+            height: 90px;
+            background: #b5c7a5;
+            border: 2px solid #4a6741;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            flex-shrink: 0;
+            box-shadow: inset 0 0 10px #7a9c6d;
+        }
+        .speech-bubble {
+            background: #fff;
+            border: 2px solid #4a6741;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 18px;
+            position: relative;
+            flex-grow: 1;
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 6px 10px 6px 0;
+            border-style: solid;
+            border-color: transparent #4a6741 transparent transparent;
+        }
+
+        /* Reproductor */
+        .player-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 24px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .song-info {
+            background: #eaf2e3;
+            border: 1px solid #6b8e5f;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 18px;
+        }
+
+        /* Notas */
+        .sticky-note {
+            background: #f7e1d7;
+            border: 1.5px dashed #c76b5c;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 18px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="title-bar">
+        <span>CENTRO DE MANDO // HANA.OS v2.0</span>
+        <div class="window-controls">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+    
+    <div class="dashboard-grid">
+        
+        <!-- PLAN SEMANAL (8 cols) -->
+        <div class="card span-8">
+            <div class="card-title">PLAN SEMANAL</div>
+            <div class="week-grid">
+                <div class="day-box">
+                    <h4 class="day-lunes">LUNES</h4>
+                    <ul>
+                        <li>[ ] Revisión de pendientes</li>
+                        <li>[ ] Setup de entorno</li>
+                    </ul>
+                </div>
+                <div class="day-box">
+                    <h4 class="day-martes">MARTES</h4>
+                    <ul>
+                        <li>[ ] Lectura técnica</li>
+                        <li>[ ] Desarrollo backend</li>
+                    </ul>
+                </div>
+                <div class="day-box">
+                    <h4 class="day-miercoles">MIÉRCOLES</h4>
+                    <ul>
+                        <li>[ ] Integración API</li>
+                        <li>[ ] Sincronización</li>
+                    </ul>
+                </div>
+                <div class="day-box">
+                    <h4 class="day-jueves">JUEVES</h4>
+                    <ul>
+                        <li>[ ] Refactorización</li>
+                        <li>[ ] Diseño UI/UX</li>
+                    </ul>
+                </div>
+                <div class="day-box">
+                    <h4 class="day-viernes">VIERNES</h4>
+                    <ul>
+                        <li>[ ] Deploy a staging</li>
+                        <li>[ ] Pruebas finales</li>
+                    </ul>
+                </div>
+                <div class="day-box">
+                    <h4 class="day-sabado">SÁBADO</h4>
+                    <ul>
+                        <li>[ ] Proyecto personal</li>
+                    </ul>
+                </div>
+                <div class="day-box">
+                    <h4 class="day-domingo">DOMINGO</h4>
+                    <ul>
+                        <li>[ ] Descanso total</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- CALENDARIO MENSUAL (4 cols) -->
+        <div class="card span-4">
+            <div class="card-title">CALENDARIO MENSUAL</div>
+            <div style="font-family: 'Press Start 2P', monospace; font-size: 10px; text-align: center; margin-bottom: 8px; color: #2e4627;">
+                SEPTIEMBRE 2026
+            </div>
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="muted">31</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                    </tr>
+                    <tr>
+                        <td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td>
+                    </tr>
+                    <tr>
+                        <td>14</td><td>15</td><td>16</td><td class="today">17</td><td>18</td><td>19</td><td>20</td>
+                    </tr>
+                    <tr>
+                        <td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td>
+                    </tr>
+                    <tr>
+                        <td>28</td><td>29</td><td>30</td><td class="muted">1</td><td class="muted">2</td><td class="muted">3</td><td class="muted">4</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PRODUCTIVIDAD & HÁBITOS (4 cols) -->
+        <div class="card span-4">
+            <div class="card-title">PRODUCTIVIDAD & HÁBITOS</div>
+            <div style="margin-bottom: 12px; font-size: 16px;">
+                <strong>Metas Clave:</strong>
+                <div style="margin-top: 4px;">[x] Arquitectura de sistema</div>
+                <div>[ ] Optimización de assets</div>
+            </div>
+            <strong>Hábitos Semanales:</strong>
+            <div class="habit-item" style="margin-top: 6px;">
+                Ejercicio (5/7)
+                <div class="progress-bar"><div class="progress-fill" style="width: 71%;"></div></div>
+            </div>
+            <div class="habit-item">
+                Lectura (4/7)
+                <div class="progress-bar"><div class="progress-fill" style="width: 57%;"></div></div>
+            </div>
+        </div>
+
+        <!-- ASISTENTE VIRTUAL HANA (4 cols) -->
+        <div class="card span-4">
+            <div class="card-title">ASISTENTE VIRTUAL</div>
+            <div class="hana-container">
+                <div class="hana-sprite">🎧</div>
+                <div class="speech-bubble">
+                    «Oye, ya llevas horas frente a la pantalla. Tómate un descanso.»
+                </div>
+            </div>
+        </div>
+
+        <!-- REPRODUCTOR DE MÚSICA (4 cols) -->
+        <div class="card span-4">
+            <div class="card-title">HANA'S PLAYLIST</div>
+            <div class="song-info">
+                <strong>Artista:</strong> Lofi Fruits Music<br>
+                <strong>Canción:</strong> Coffee Shop Radio
+            </div>
+            <div class="player-controls">
+                <span>⏮</span>
+                <span>▶</span>
+                <span>⏸</span>
+                <span>⏭</span>
+            </div>
+        </div>
+
+        <!-- NOTAS & PROYECTOS (12 cols) -->
+        <div class="card span-12">
+            <div class="card-title">NOTAS & PROYECTOS</div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div class="sticky-note">
+                    <strong>Proyecto Alpha:</strong><br>
+                    Revisar documentación de API y endpoints pendientes.
+                </div>
+                <div class="sticky-note">
+                    <strong>Recordatorio:</strong><br>
+                    Actualizar dependencias de Python y Node.js.
+                </div>
+                <div class="sticky-note">
+                    <strong>Ideas UI:</strong><br>
+                    Agregar modo oscuro con paleta retro.
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
