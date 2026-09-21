@@ -2,8 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Centro de Mando - Hana.OS v5.0 (Notion Aesthetic)</title>
+    <title>Centro de Mando - Hana.OS v5.0 (Cloud Sync)</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
+    <!-- SDKs de Firebase (Compat version para integración directa limpia en HTML/JS) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -17,6 +22,30 @@
             padding: 16px;
             font-size: 18px;
         }
+        
+        /* Pantalla de Bloqueo con Clave */
+        #authOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #f7f3f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100000;
+            gap: 12px;
+        }
+        .auth-box {
+            background: #ffffff;
+            padding: 24px;
+            border: 2px solid #e2d3ce;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px #ebd5cd;
+            text-align: center;
+            max-width: 350px;
+            width: 100%;
+        }
+
         .planner-container {
             max-width: 1500px;
             margin: 0 auto;
@@ -25,7 +54,9 @@
             border-radius: 8px;
             box-shadow: 4px 4px 0px #ebd5cd;
             overflow: hidden;
+            display: none; /* Oculto hasta autenticarse */
         }
+
         /* Barra Superior Estilo Notion */
         .top-bar {
             background: #f4ece6;
@@ -63,7 +94,7 @@
             .main-grid { grid-template-columns: 1fr; }
         }
 
-        /* Columna Izquierda (Hábitos, Calendario, Notas) */
+        /* Columna Izquierda */
         .sidebar-left {
             background: #faf6f3;
             border-right: 2px solid #e2d3ce;
@@ -117,13 +148,37 @@
             border: 1px solid #f0e6e2;
             padding: 4px;
             background: #fff;
-            cursor: pointer;
         }
-        .mini-cal td:hover { background: #f4ece6; }
         .mini-cal td.today { background: #b5838d; color: #fff; }
         .mini-cal td.muted { color: #d0c0bc; }
 
-        /* Panel Derecho: Columnas Semanales (Lunes a Domingo) */
+        /* Panel de Enlaces y Docs (Nuevo requerimiento) */
+        .links-container {
+            max-height: 140px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .link-card-item {
+            background: #fff;
+            padding: 4px 6px;
+            border: 1px solid #f0e6e2;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+        }
+        .link-card-item a {
+            color: #b5838d;
+            text-decoration: none;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        .link-card-item a:hover { text-decoration: underline; }
+
+        /* Panel Derecho: Columnas Semanales */
         .weekly-columns-area {
             padding: 16px;
             display: flex;
@@ -150,7 +205,7 @@
             .days-grid-columns { grid-template-columns: 1fr; }
         }
 
-        /* Columna de Día Individual (Estilo de la imagen de referencia) */
+        /* Columna de Día Individual */
         .day-column {
             background: #fcf9f7;
             border: 1px solid #e2d3ce;
@@ -191,7 +246,6 @@
             border-radius: 3px;
         }
         
-        /* Lista de Tareas con barra de progreso por día */
         .task-list-column {
             list-style: none;
             max-height: 220px;
@@ -244,15 +298,26 @@
 </head>
 <body>
 
+<!-- PANTALLA DE ACCESO CLAVE MAESTRA -->
+<div id="authOverlay">
+    <div class="auth-box">
+        <div style="font-size: 24px; font-weight: bold; color: #6e5852; margin-bottom: 10px;">🍓 HANA.OS ACCESS</div>
+        <p style="font-size: 16px; color: #8c6d62; margin-bottom: 12px;">Ingresa tu clave maestra para sincronizar con Firebase:</p>
+        <input type="password" id="masterPassInput" class="focus-input" placeholder="Contraseña..." style="text-align: center; margin-bottom: 10px;">
+        <button class="retro-btn" style="width: 100%; padding: 6px;" onclick="verifyAccess()">Desbloquear Sistema</button>
+        <p id="authErrorMsg" style="color: #b5838d; font-size: 14px; margin-top: 8px; display: none;">Clave incorrecta</p>
+    </div>
+</div>
+
 <div id="hanaMascot" title="¡Hola! Clic para hablar con Hana">🍓</div>
 
-<div class="planner-container">
+<div class="planner-container" id="mainPlannerContainer">
     <!-- Barra Superior -->
     <div class="top-bar">
-        <div class="top-title">✨ WEEKLY PLAN // HANA.OS (Notion Aesthetic Edition)</div>
+        <div class="top-title">✨ WEEKLY PLAN // HANA.OS (Cloud Sync Edition)</div>
         <div style="display: flex; gap: 10px; align-items: center;">
+            <span id="syncStatus" style="font-size: 14px; color: #739e82;">● Sincronizado</span>
             <span id="currentMonthYearLabel" style="font-size: 16px; color: #8c6d62;">Septiembre 2026</span>
-            <button class="retro-btn" onclick="exportData()">💾 Guardar Respaldo</button>
         </div>
     </div>
 
@@ -278,9 +343,22 @@
                 </div>
             </div>
 
+            <!-- MÓDULO NUEVO: ENLACES Y DOCUMENTOS DIRECTOS -->
+            <div>
+                <div class="sidebar-section-title">Links & Docs Directos</div>
+                <div class="links-container" id="linksListContainer"></div>
+                <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 6px;">
+                    <input type="text" id="newLinkTitle" class="focus-input" placeholder="Nombre (ej: Docs Git)...">
+                    <div style="display: flex; gap: 4px;">
+                        <input type="url" id="newLinkUrl" class="focus-input" placeholder="https://...">
+                        <button class="retro-btn" onclick="addLink()">+</button>
+                    </div>
+                </div>
+            </div>
+
             <div>
                 <div class="sidebar-section-title">Notas Rápidas</div>
-                <textarea id="quickNotesArea" class="focus-input" style="height: 100px; resize: none;" oninput="saveNotes()"></textarea>
+                <textarea id="quickNotesArea" class="focus-input" style="height: 80px; resize: none;" oninput="saveNotesDebounced()"></textarea>
             </div>
         </div>
 
@@ -292,31 +370,49 @@
                 <button class="retro-btn" onclick="changeWeek(1)">Semana Siguiente ▶</button>
             </div>
 
-            <!-- Contenedor de las 7 columnas de los días -->
             <div class="days-grid-columns" id="daysGridColumns"></div>
         </div>
     </div>
 </div>
 
 <script>
+    // ================= CONFIGURA TU FIREBASE AQUÍ =================
+    // (Usa los mismos datos de tu aplicación de finanzas anterior)
+    const firebaseConfig = {
+        apiKey: "TU_API_KEY",
+        authDomain: "TU_DOMINIO.firebaseapp.com",
+        projectId: "TU_PROJECT_ID",
+        storageBucket: "TU_BUCKET.appspot.com",
+        messagingSenderId: "TU_SENDER_ID",
+        appId: "TU_APP_ID"
+    };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Contraseña maestra personalizada para proteger el sistema
+    const CLAVE_MAESTRA = "hana2026"; 
+
+    function verifyAccess() {
+        const inputVal = document.getElementById('masterPassInput').value;
+        if (inputVal === CLAVE_MAESTRA) {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('mainPlannerContainer').style.display = 'block';
+            initApp();
+        } else {
+            const err = document.getElementById('authErrorMsg');
+            err.style.display = 'block';
+        }
+    }
+
     let currentWeekOffset = 0;
     const diasNombres = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
 
-    // Horario universitario predeterminado inyectado en las columnas
-    const horarioUniversidad = {
-        0: ["📚 SIST. OPE. 10am-1pm", "📚 EDA 2-5pm", "📚 EST. APL. 7-10pm"],
-        1: ["📚 SIST. INTE. 7-10am", "📚 ING. PRO. 8-10pm"],
-        2: ["📚 SIST. OPE. 10am-1pm", "📚 ING. SOFT. 4-6pm"],
-        3: ["📚 EDA 2-5pm", "📚 EST. APL. 8-10pm"],
-        4: ["📚 SIST. INTE. 7-9am", "📚 ING. SOFT. 3-6pm", "📚 ING. PRO. 8-10pm"],
-        5: [],
-        6: []
-    };
-
     const frasesHana = [
-        "«¡Qué organizada se ve tu semana con este estilo de Notion!»",
-        "«No olvides revisar tus bloques de sistemas y bases de datos hoy.»",
-        "«¡Vas excelente con tus entregas y proyectos universitarios!»"
+        "«¡Sincronizado al instante con tu celular y tu PC!»",
+        "«Recuerda revisar tus enlaces directos y proyectos de sistemas hoy.»",
+        "«¡Lo estás haciendo genial en la universidad y tus emprendimientos!»"
     ];
 
     // Animación de Hana flotando
@@ -336,30 +432,126 @@
         alert(f);
     };
 
-    // Datos y Memoria Local robusta
-    let notionData = JSON.parse(localStorage.getItem('hana_dashboard_v5')) || {
-        days: {}, // Estructura: { '2026-09-21': { focus: '...', events: '...', tasks: [{text: '...', done: false}] } }
+    // Estructura de datos por defecto en Firestore
+    let notionData = {
+        days: {},
         habits: [
             { name: "Ejercicio", days: [false, false, false, false, false, false, false] },
             { name: "Lectura", days: [false, false, false, false, false, false, false] }
         ],
+        links: [
+            { title: "GitHub Portfolio", url: "https://github.com" },
+            { title: "Nereida Jewelry", url: "https://instagram.com" }
+        ],
         notes: "Revisar pendientes de la API y reportes en Power BI."
     };
 
-    function saveNotionData() {
-        localStorage.setItem('hana_dashboard_v5', JSON.stringify(notionData));
+    // Sincronización en Tiempo Real con Firestore (Colección: 'hana_os', Documento único: 'main_data')
+    function initApp() {
+        renderSidebarCalendar();
+        
+        db.collection("hana_os").doc("main_data").onSnapshot((doc) => {
+            if (doc.exists) {
+                notionData = doc.data();
+                document.getElementById('syncStatus').innerText = "● Sincronizado en vivo";
+                renderSidebar();
+                renderWeeklyPlanner();
+            } else {
+                // Si está vacío en la nube, subimos la estructura base inicial
+                saveCloudData();
+            }
+        }, (error) => {
+            document.getElementById('syncStatus').innerText = "⚠ Error de red";
+            console.error("Error sincronizando Firebase: ", error);
+        });
     }
 
-    function exportData() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notionData));
-        const anchor = document.createElement('a');
-        anchor.setAttribute("href", dataStr);
-        anchor.setAttribute("download", "hana_notion_backup.json");
-        document.body.appendChild(anchor);
-        anchor.click();
-        anchor.remove();
+    function saveCloudData() {
+        document.getElementById('syncStatus').innerText = "↻ Guardando...";
+        db.collection("hana_os").doc("main_data").set(notionData)
+            .then(() => {
+                document.getElementById('syncStatus').innerText = "● Sincronizado en vivo";
+            })
+            .catch((error) => {
+                console.error("Error al guardar: ", error);
+            });
     }
 
+    let notesTimeout;
+    function saveNotesDebounced() {
+        notionData.notes = document.getElementById('quickNotesArea').value;
+        clearTimeout(notesTimeout);
+        notesTimeout = setTimeout(() => {
+            saveCloudData();
+        }, 800); // Espera 800ms de inactividad para mandar a Firebase
+    }
+
+    // --- LÓGICA DEL CALENDARIO Y HÁBITOS ---
+    function renderSidebarCalendar() {
+        const tbody = document.getElementById('miniCalendarBody');
+        tbody.innerHTML = '';
+        let dayCounter = 1, daysInMonth = 30, startDay = 1;
+        let row = document.createElement('tr');
+        for (let i = 0; i < startDay; i++) row.innerHTML += `<td class="muted">${31 - (startDay - i - 1)}</td>`;
+        for (let i = startDay; i < 7; i++) {
+            let isToday = (dayCounter === 21) ? 'today' : '';
+            row.innerHTML += `<td class="${isToday}">${dayCounter}</td>`;
+            dayCounter++;
+        }
+        tbody.appendChild(row);
+        while (dayCounter <= daysInMonth) {
+            row = document.createElement('tr');
+            for (let i = 0; i < 7; i++) {
+                if (dayCounter <= daysInMonth) {
+                    let isToday = (dayCounter === 21) ? 'today' : '';
+                    row.innerHTML += `<td class="${isToday}">${dayCounter}</td>`;
+                    dayCounter++;
+                } else {
+                    row.innerHTML += `<td class="muted">${dayCounter - daysInMonth}</td>`;
+                    dayCounter++;
+                }
+            }
+            tbody.appendChild(row);
+        }
+    }
+
+    function renderSidebar() {
+        // Hábitos
+        const hContainer = document.getElementById('sidebarHabitsContainer');
+        hContainer.innerHTML = '';
+        (notionData.habits || []).forEach((h, hIdx) => {
+            let daysHtml = '';
+            h.days.forEach((checked, dIdx) => {
+                daysHtml += `<div class="h-box ${checked ? 'active' : ''}" onclick="toggleHabit(${hIdx}, ${dIdx})">${diasNombres[dIdx][0]}</div>`;
+            });
+            hContainer.innerHTML += `
+                <div class="habit-row-mini">
+                    <span style="width:70px; overflow:hidden;">${h.name}</span>
+                    <div class="habit-days-mini">${daysHtml}</div>
+                    <button class="delete-btn" onclick="deleteHabit(${hIdx})">×</button>
+                </div>
+            `;
+        });
+
+        // Enlaces / Docs
+        const lContainer = document.getElementById('linksListContainer');
+        lContainer.innerHTML = '';
+        (notionData.links || []).forEach((l, lIdx) => {
+            lContainer.innerHTML += `
+                <div class="link-card-item">
+                    <a href="${l.url}" target="_blank">🔗 ${l.title}</a>
+                    <button class="delete-btn" onclick="deleteLink(${lIdx})">×</button>
+                </div>
+            `;
+        });
+
+        // Notas
+        if(document.activeElement !== document.getElementById('quickNotesArea')) {
+            document.getElementById('quickNotesArea').value = notionData.notes || "";
+        }
+    }
+
+    // --- LÓGICA DEL PLANNER SEMANAL ---
     function getMonday(d, offset) {
         d = new Date(d);
         d.setDate(d.getDate() + (offset * 7));
@@ -383,18 +575,16 @@
             let dNum = currentDay.getDate();
             let dateKey = `2026-09-${dNum < 10 ? '0'+dNum : dNum}`;
 
-            // Inicializar datos del día si no existen
+            if (!notionData.days) notionData.days = {};
             if (!notionData.days[dateKey]) {
                 notionData.days[dateKey] = {
-                    focus: i === 0 ? "Avanzar arquitectura de sistema" : "",
+                    focus: "",
                     events: "",
-                    tasks: (horarioUniversidad[i] || []).map(c => ({ text: c, done: false }))
+                    tasks: []
                 };
             }
 
             let dayObj = notionData.days[dateKey];
-
-            // Calcular porcentaje de tareas completadas del día
             let totalTasks = dayObj.tasks.length;
             let completedTasks = dayObj.tasks.filter(t => t.done).length;
             let percent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
@@ -419,12 +609,12 @@
                 
                 <div class="day-section-box">
                     <div class="day-section-title">Today's Focus</div>
-                    <input type="text" class="focus-input" value="${dayObj.focus}" oninput="updateFocus('${dateKey}', this.value)" placeholder="Enfoque del día...">
+                    <input type="text" class="focus-input" value="${dayObj.focus || ''}" oninput="updateFocus('${dateKey}', this.value)" placeholder="Enfoque del día...">
                 </div>
 
                 <div class="day-section-box">
                     <div class="day-section-title">Events / Citas</div>
-                    <input type="text" class="focus-input" value="${dayObj.events}" oninput="updateEvents('${dateKey}', this.value)" placeholder="Ej: 4:00 PM Reunión...">
+                    <input type="text" class="focus-input" value="${dayObj.events || ''}" oninput="updateEvents('${dateKey}', this.value)" placeholder="Ej: Reunión BCP...">
                 </div>
 
                 <div class="day-section-box" style="flex-grow:1; display:flex; flex-direction:column;">
@@ -449,102 +639,62 @@
         renderWeeklyPlanner();
     }
 
-    function updateFocus(dateKey, val) { notionData.days[dateKey].focus = val; saveNotionData(); }
-    function updateEvents(dateKey, val) { notionData.days[dateKey].events = val; saveNotionData(); }
+    // Funciones de modificación con guardado automático en Firebase
+    function updateFocus(dateKey, val) { notionData.days[dateKey].focus = val; saveCloudData(); }
+    function updateEvents(dateKey, val) { notionData.days[dateKey].events = val; saveCloudData(); }
 
     function addTask(dateKey) {
         const input = document.getElementById(`newTaskInput-${dateKey}`);
         if (!input.value.trim()) return;
         notionData.days[dateKey].tasks.push({ text: input.value.trim(), done: false });
-        saveNotionData();
+        saveCloudData();
         renderWeeklyPlanner();
     }
 
     function deleteTask(dateKey, tIdx) {
         notionData.days[dateKey].tasks.splice(tIdx, 1);
-        saveNotionData();
+        saveCloudData();
         renderWeeklyPlanner();
     }
 
     function toggleTask(dateKey, tIdx) {
         notionData.days[dateKey].tasks[tIdx].done = !notionData.days[dateKey].tasks[tIdx].done;
-        saveNotionData();
+        saveCloudData();
         renderWeeklyPlanner();
-    }
-
-    // --- MINI CALENDARIO Y HÁBITOS ---
-    function renderSidebar() {
-        // Calendario de Septiembre 2026
-        const tbody = document.getElementById('miniCalendarBody');
-        tbody.innerHTML = '';
-        let dayCounter = 1, daysInMonth = 30, startDay = 1;
-        let row = document.createElement('tr');
-        for (let i = 0; i < startDay; i++) row.innerHTML += `<td class="muted">${31 - (startDay - i - 1)}</td>`;
-        for (let i = startDay; i < 7; i++) {
-            let isToday = (dayCounter === 17) ? 'today' : '';
-            row.innerHTML += `<td class="${isToday}">${dayCounter}</td>`;
-            dayCounter++;
-        }
-        tbody.appendChild(row);
-        while (dayCounter <= daysInMonth) {
-            row = document.createElement('tr');
-            for (let i = 0; i < 7; i++) {
-                if (dayCounter <= daysInMonth) {
-                    let isToday = (dayCounter === 17) ? 'today' : '';
-                    row.innerHTML += `<td class="${isToday}">${dayCounter}</td>`;
-                    dayCounter++;
-                } else {
-                    row.innerHTML += `<td class="muted">${dayCounter - daysInMonth}</td>`;
-                    dayCounter++;
-                }
-            }
-            tbody.appendChild(row);
-        }
-
-        // Hábitos
-        const hContainer = document.getElementById('sidebarHabitsContainer');
-        hContainer.innerHTML = '';
-        notionData.habits.forEach((h, hIdx) => {
-            let daysHtml = '';
-            h.days.forEach((checked, dIdx) => {
-                daysHtml += `<div class="h-box ${checked ? 'active' : ''}" onclick="toggleHabit(${hIdx}, ${dIdx})">${diasNombres[dIdx][0]}</div>`;
-            });
-            hContainer.innerHTML += `
-                <div class="habit-row-mini">
-                    <span style="width:70px; overflow:hidden;">${h.name}</span>
-                    <div class="habit-days-mini">${daysHtml}</div>
-                    <button class="delete-btn" onclick="deleteHabit(${hIdx})">×</button>
-                </div>
-            `;
-        });
-
-        // Notas
-        document.getElementById('quickNotesArea').value = notionData.notes;
     }
 
     function addHabit() {
         const input = document.getElementById('newHabitInput');
         if (!input.value.trim()) return;
+        if (!notionData.habits) notionData.habits = [];
         notionData.habits.push({ name: input.value.trim(), days: [false, false, false, false, false, false, false] });
         input.value = '';
-        saveNotionData();
+        saveCloudData();
         renderSidebar();
     }
-    function deleteHabit(hIdx) { notionData.habits.splice(hIdx, 1); saveNotionData(); renderSidebar(); }
+    function deleteHabit(hIdx) { notionData.habits.splice(hIdx, 1); saveCloudData(); renderSidebar(); }
     function toggleHabit(hIdx, dIdx) {
         notionData.habits[hIdx].days[dIdx] = !notionData.habits[hIdx].days[dIdx];
-        saveNotionData();
+        saveCloudData();
         renderSidebar();
-    }
-    function saveNotes() {
-        notionData.notes = document.getElementById('quickNotesArea').value;
-        saveNotionData();
     }
 
-    window.onload = function() {
+    function addLink() {
+        const titleInput = document.getElementById('newLinkTitle');
+        const urlInput = document.getElementById('newLinkUrl');
+        if (!titleInput.value.trim() || !urlInput.value.trim()) return;
+        if (!notionData.links) notionData.links = [];
+        notionData.links.push({ title: titleInput.value.trim(), url: urlInput.value.trim() });
+        titleInput.value = '';
+        urlInput.value = '';
+        saveCloudData();
         renderSidebar();
-        renderWeeklyPlanner();
-    };
+    }
+    function deleteLink(lIdx) {
+        notionData.links.splice(lIdx, 1);
+        saveCloudData();
+        renderSidebar();
+    }
 </script>
 
 </body>
