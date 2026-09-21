@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Centro de Mando - Hana.OS v5.0 (Cloud Sync)</title>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Importación de tipografía Andika desde Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Andika&display=swap" rel="stylesheet">
     
     <!-- SDKs de Firebase (Compat version para integración directa limpia en HTML/JS) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -17,10 +18,10 @@
         }
         body {
             background-color: #f7f3f0;
-            font-family: 'VT323', monospace;
+            font-family: 'Andika', sans-serif;
             color: #3b3038;
             padding: 16px;
-            font-size: 18px;
+            font-size: 17px;
         }
         
         /* Pantalla de Bloqueo con Clave */
@@ -67,7 +68,7 @@
             border-bottom: 2px solid #e2d3ce;
         }
         .top-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: bold;
             color: #6e5852;
             letter-spacing: 1px;
@@ -76,8 +77,8 @@
             background: #b5838d;
             color: white;
             border: none;
-            font-family: 'VT323', monospace;
-            font-size: 16px;
+            font-family: 'Andika', sans-serif;
+            font-size: 15px;
             padding: 4px 10px;
             cursor: pointer;
             border-radius: 4px;
@@ -104,7 +105,7 @@
             gap: 20px;
         }
         .sidebar-section-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             color: #8c6d62;
             border-bottom: 1px dashed #d8c2bb;
@@ -119,14 +120,14 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 6px;
-            font-size: 16px;
+            font-size: 15px;
         }
         .habit-days-mini { display: flex; gap: 2px; }
         .h-box {
-            width: 16px; height: 16px;
+            width: 18px; height: 18px;
             background: #fff;
             border: 1px solid #d8c2bb;
-            font-size: 10px;
+            font-size: 11px;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
         }
@@ -137,12 +138,12 @@
             width: 100%;
             border-collapse: collapse;
             text-align: center;
-            font-size: 15px;
+            font-size: 14px;
         }
         .mini-cal th {
             color: #8c6d62;
             padding: 2px;
-            font-size: 14px;
+            font-size: 13px;
         }
         .mini-cal td {
             border: 1px solid #f0e6e2;
@@ -168,7 +169,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 15px;
+            font-size: 14px;
         }
         .link-card-item a {
             color: #b5838d;
@@ -220,7 +221,7 @@
             padding: 6px;
             text-align: center;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 15px;
             border-bottom: 1px solid #d8c2bb;
         }
         .day-section-box {
@@ -228,7 +229,7 @@
             border-bottom: 1px solid #eee4df;
         }
         .day-section-title {
-            font-size: 14px;
+            font-size: 13px;
             color: #8c6d62;
             text-transform: uppercase;
             margin-bottom: 4px;
@@ -239,8 +240,8 @@
             width: 100%;
             background: #fff;
             border: 1px solid #d8c2bb;
-            font-family: 'VT323', monospace;
-            font-size: 16px;
+            font-family: 'Andika', sans-serif;
+            font-size: 15px;
             padding: 3px 6px;
             color: #3b3038;
             border-radius: 3px;
@@ -256,7 +257,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 16px;
+            font-size: 15px;
             margin-bottom: 3px;
             background: #fff;
             padding: 2px 4px;
@@ -285,8 +286,8 @@
 <!-- PANTALLA DE ACCESO CLAVE MAESTRA -->
 <div id="authOverlay">
     <div class="auth-box">
-        <div style="font-size: 24px; font-weight: bold; color: #6e5852; margin-bottom: 10px;">🍓 HANA.OS ACCESS</div>
-        <p style="font-size: 16px; color: #8c6d62; margin-bottom: 12px;">Ingresa tu clave maestra para sincronizar con Firebase:</p>
+        <div style="font-size: 22px; font-weight: bold; color: #6e5852; margin-bottom: 10px;">🍓 HANA.OS ACCESS</div>
+        <p style="font-size: 15px; color: #8c6d62; margin-bottom: 12px;">Ingresa tu clave maestra para sincronizar con Firebase:</p>
         <input type="password" id="masterPassInput" class="focus-input" placeholder="Contraseña..." style="text-align: center; margin-bottom: 10px;">
         <button class="retro-btn" style="width: 100%; padding: 6px;" onclick="verifyAccess()">Desbloquear Sistema</button>
         <p id="authErrorMsg" style="color: #b5838d; font-size: 14px; margin-top: 8px; display: none;">Clave incorrecta</p>
@@ -298,8 +299,8 @@
     <div class="top-bar">
         <div class="top-title">✨ WEEKLY PLAN // HANA.OS (Cloud Sync Edition)</div>
         <div style="display: flex; gap: 10px; align-items: center;">
-            <span id="syncStatus" style="font-size: 14px; color: #739e82;">● Sincronizado</span>
-            <span id="currentMonthYearLabel" style="font-size: 16px; color: #8c6d62;">Septiembre 2026</span>
+            <span id="syncStatus" style="font-size: 13px; color: #739e82;">● Sincronizado</span>
+            <span id="currentMonthYearLabel" style="font-size: 15px; color: #8c6d62;">Septiembre 2026</span>
         </div>
     </div>
 
@@ -348,7 +349,7 @@
         <div class="weekly-columns-area">
             <div class="week-navigation-bar">
                 <button class="retro-btn" onclick="changeWeek(-1)">◀ Semana Anterior</button>
-                <span id="weekRangeLabel" style="font-weight: bold; font-size: 18px; color: #5c453e;">Semana</span>
+                <span id="weekRangeLabel" style="font-weight: bold; font-size: 17px; color: #5c453e;">Semana</span>
                 <button class="retro-btn" onclick="changeWeek(1)">Semana Siguiente ▶</button>
             </div>
 
