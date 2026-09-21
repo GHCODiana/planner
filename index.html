@@ -21,7 +21,7 @@
             font-family: 'Livvic', sans-serif;
             color: #3b3038;
             padding: 16px;
-            font-size: 13px; /* Letra más pequeña como pediste */
+            font-size: 13px;
         }
         
         /* Pantalla de Bloqueo con Clave */
@@ -405,16 +405,28 @@
         notes: "Revisar pendientes de la API y reportes en Power BI."
     };
 
+    let isRemoteUpdate = false;
+
     // Sincronización en Tiempo Real con Firestore
     function initApp() {
         renderSidebarCalendar();
         
         db.collection("hana_os").doc("main_data").onSnapshot((doc) => {
             if (doc.exists) {
-                notionData = doc.data();
+                const cloudData = doc.data();
+                // Evitamos redibujar si el usuario está escribiendo activamente en un input de texto o textarea
+                const activeEl = document.activeElement;
+                const isTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA') && activeEl.id !== 'masterPassInput';
+
+                if (!isTyping) {
+                    notionData = cloudData;
+                    renderSidebar();
+                    renderWeeklyPlanner();
+                } else {
+                    // Si está escribiendo, solo actualizamos los datos de fondo sin recrear el DOM
+                    notionData = cloudData;
+                }
                 document.getElementById('syncStatus').innerText = "● Sincronizado en vivo";
-                renderSidebar();
-                renderWeeklyPlanner();
             } else {
                 saveCloudData();
             }
@@ -440,6 +452,26 @@
         notionData.notes = document.getElementById('quickNotesArea').value;
         clearTimeout(notesTimeout);
         notesTimeout = setTimeout(() => {
+            saveCloudData();
+        }, 800);
+    }
+
+    let focusTimeouts = {};
+    function updateFocusDebounced(dateKey, val) {
+        if (!notionData.days[dateKey]) notionData.days[dateKey] = { focus: "", events: "", tasks: [] };
+        notionData.days[dateKey].focus = val;
+        clearTimeout(focusTimeouts[dateKey]);
+        focusTimeouts[dateKey] = setTimeout(() => {
+            saveCloudData();
+        }, 800);
+    }
+
+    let eventsTimeouts = {};
+    function updateEventsDebounced(dateKey, val) {
+        if (!notionData.days[dateKey]) notionData.days[dateKey] = { focus: "", events: "", tasks: [] };
+        notionData.days[dateKey].events = val;
+        clearTimeout(eventsTimeouts[dateKey]);
+        eventsTimeouts[dateKey] = setTimeout(() => {
             saveCloudData();
         }, 800);
     }
@@ -504,8 +536,9 @@
         });
 
         // Notas
-        if(document.activeElement !== document.getElementById('quickNotesArea')) {
-            document.getElementById('quickNotesArea').value = notionData.notes || "";
+        const notesArea = document.getElementById('quickNotesArea');
+        if(document.activeElement !== notesArea) {
+            notesArea.value = notionData.notes || "";
         }
     }
 
@@ -567,12 +600,12 @@
                 
                 <div class="day-section-box">
                     <div class="day-section-title">Today's Focus</div>
-                    <input type="text" class="focus-input" value="${dayObj.focus || ''}" oninput="updateFocus('${dateKey}', this.value)" placeholder="Enfoque del día...">
+                    <input type="text" id="focus-${dateKey}" class="focus-input" value="${dayObj.focus || ''}" oninput="updateFocusDebounced('${dateKey}', this.value)" placeholder="Enfoque del día...">
                 </div>
 
                 <div class="day-section-box">
                     <div class="day-section-title">Events / Citas</div>
-                    <input type="text" class="focus-input" value="${dayObj.events || ''}" oninput="updateEvents('${dateKey}', this.value)" placeholder="Ej: Reunión BCP...">
+                    <input type="text" id="events-${dateKey}" class="focus-input" value="${dayObj.events || ''}" oninput="updateEventsDebounced('${dateKey}', this.value)" placeholder="Ej: Reunión BCP...">
                 </div>
 
                 <div class="day-section-box" style="flex-grow:1; display:flex; flex-direction:column;">
@@ -596,10 +629,6 @@
         currentWeekOffset += dir;
         renderWeeklyPlanner();
     }
-
-    // Funciones de modificación con guardado automático en Firebase
-    function updateFocus(dateKey, val) { notionData.days[dateKey].focus = val; saveCloudData(); }
-    function updateEvents(dateKey, val) { notionData.days[dateKey].events = val; saveCloudData(); }
 
     function addTask(dateKey) {
         const input = document.getElementById(`newTaskInput-${dateKey}`);
