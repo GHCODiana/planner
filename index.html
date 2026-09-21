@@ -152,7 +152,7 @@
         .mini-cal td.today { background: #b5838d; color: #fff; }
         .mini-cal td.muted { color: #d0c0bc; }
 
-        /* Panel de Enlaces y Docs (Nuevo requerimiento) */
+        /* Panel de Enlaces y Docs */
         .links-container {
             max-height: 140px;
             overflow-y: auto;
@@ -278,6 +278,9 @@
         .delete-btn {
             background: none; border: none; color: #b5838d; cursor: pointer; font-size: 14px; font-weight: bold;
         }
+    </style>
+</head>
+<body>
 
 <!-- PANTALLA DE ACCESO CLAVE MAESTRA -->
 <div id="authOverlay">
@@ -322,7 +325,7 @@
                 </div>
             </div>
 
-            <!-- MÓDULO NUEVO: ENLACES Y DOCUMENTOS DIRECTOS -->
+            <!-- MÓDULO: ENLACES Y DOCUMENTOS DIRECTOS -->
             <div>
                 <div class="sidebar-section-title">Links & Docs Directos</div>
                 <div class="links-container" id="linksListContainer"></div>
@@ -356,7 +359,6 @@
 
 <script>
     // ================= CONFIGURA TU FIREBASE AQUÍ =================
-    // (Usa los mismos datos de tu aplicación de finanzas anterior)
     const firebaseConfig = {
         apiKey: "AIzaSyCLrChyxTXeKxkGElCJqXPrhUpYQHDqpEw",
         authDomain: "planner-51cb9.firebaseapp.com",
@@ -402,7 +404,7 @@
         notes: "Revisar pendientes de la API y reportes en Power BI."
     };
 
-    // Sincronización en Tiempo Real con Firestore (Colección: 'hana_os', Documento único: 'main_data')
+    // Sincronización en Tiempo Real con Firestore
     function initApp() {
         renderSidebarCalendar();
         
@@ -413,7 +415,6 @@
                 renderSidebar();
                 renderWeeklyPlanner();
             } else {
-                // Si está vacío en la nube, subimos la estructura base inicial
                 saveCloudData();
             }
         }, (error) => {
@@ -439,7 +440,7 @@
         clearTimeout(notesTimeout);
         notesTimeout = setTimeout(() => {
             saveCloudData();
-        }, 800); // Espera 800ms de inactividad para mandar a Firebase
+        }, 800);
     }
 
     // --- LÓGICA DEL CALENDARIO Y HÁBITOS ---
