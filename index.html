@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Centro de Mando - Hana.OS v4.0 (Trinket Girlies Palette)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+    <title>Centro de Mando - Hana.OS v5.0 (Notion Aesthetic)</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -11,525 +11,355 @@
             padding: 0;
         }
         body {
-            background-color: #fceee9; /* Fondo crema suave */
-            background-image: 
-                linear-gradient(to right, #f2ded6 1px, transparent 1px),
-                linear-gradient(to bottom, #f2ded6 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-color: #f7f3f0;
             font-family: 'VT323', monospace;
             color: #3b3038;
-            padding: 20px;
-            min-height: 100vh;
+            padding: 16px;
+            font-size: 18px;
         }
-        .window {
-            background: #fcf6f5; /* Blanco rosa pastel */
-            border: 3px solid #d48395; /* Rosa frambuesa/trinket */
-            border-radius: 10px;
-            box-shadow: 5px 5px 0px #b56576;
-            max-width: 1400px;
+        .planner-container {
+            max-width: 1500px;
             margin: 0 auto;
+            background: #ffffff;
+            border: 2px solid #e2d3ce;
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px #ebd5cd;
             overflow: hidden;
         }
-        .title-bar {
-            background: #d48395;
-            color: #fff;
-            padding: 10px 14px;
-            font-family: 'Press Start 2P', monospace;
-            font-size: 11px;
+        /* Barra Superior Estilo Notion */
+        .top-bar {
+            background: #f4ece6;
+            padding: 10px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 2px solid #e2d3ce;
         }
-        .window-controls span {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            background: #f7c5cc;
-            border: 1px solid #3b3038;
-            margin-left: 4px;
-            border-radius: 50%;
-        }
-        .dashboard-grid {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 16px;
-        }
-        .card {
-            background: #fff0f2; /* Rosa muy pálido */
-            border: 2px solid #e09fbe;
-            border-radius: 8px;
-            padding: 14px;
-            box-shadow: 2px 2px 0px #f2c6d9;
-        }
-        .card-title {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 11px;
-            color: #794056;
-            margin-bottom: 12px;
-            border-bottom: 2px dashed #d48395;
-            padding-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .span-12 { grid-column: span 12; }
-        .span-9 { grid-column: span 9; }
-        .span-8 { grid-column: span 8; }
-        .span-4 { grid-column: span 4; }
-        .span-3 { grid-column: span 3; }
-
-        @media(max-width: 1100px) {
-            .span-9, .span-3, .span-8, .span-4 { grid-column: span 12; }
-        }
-
-        /* Controles de Semana */
-        .week-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            background: #fae1dd;
-            padding: 6px 10px;
-            border: 1px solid #e09fbe;
-            border-radius: 6px;
+        .top-title {
             font-size: 20px;
+            font-weight: bold;
+            color: #6e5852;
+            letter-spacing: 1px;
         }
         .retro-btn {
-            background: #b56576;
+            background: #b5838d;
             color: white;
-            border: 1px solid #794056;
-            font-family: 'VT323', monospace;
-            font-size: 18px;
-            padding: 3px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .retro-btn:hover { background: #924d5b; }
-
-        /* Plan Semanal con Fechas */
-        .week-grid-large {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
-        @media(max-width: 1200px) {
-            .week-grid-large { grid-template-columns: repeat(4, 1fr); }
-        }
-        .day-box-large {
-            background: #fff;
-            border: 1.5px solid #e09fbe;
-            border-radius: 6px;
-            padding: 8px;
-            display: flex;
-            flex-direction: column;
-            min-height: 250px;
-        }
-        .day-header {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 8px;
-            margin-bottom: 6px;
-            padding: 4px;
-            text-align: center;
-            border-radius: 3px;
-            color: #fff;
-        }
-        /* Colores de días basados en paleta denim/rosa/azul */
-        .dh-0 { background-color: #b56576; } /* Lunes */
-        .dh-1 { background-color: #6d597a; } /* Martes */
-        .dh-2 { background-color: #355070; } /* Miércoles */
-        .dh-3 { background-color: #457b9d; } /* Jueves */
-        .dh-4 { background-color: #e56b6f; } /* Viernes */
-        .dh-5 { background-color: #eaac8b; color: #3b3038 !important; } /* Sábado */
-        .dh-6 { background-color: #b5838d; } /* Domingo */
-
-        .task-list {
-            list-style: none;
-            font-size: 16px;
-            flex-grow: 1;
-            overflow-y: auto;
-            max-height: 160px;
-            margin-bottom: 6px;
-        }
-        .task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 4px;
-            background: #fdf2f4;
-            padding: 2px 4px;
-            border-radius: 3px;
-            border-left: 3px solid #b56576;
-        }
-        .task-item input[type="checkbox"] { margin-right: 4px; cursor: pointer; }
-        .task-delete { color: #b56576; cursor: pointer; font-weight: bold; font-size: 14px; border: none; background: none; }
-        .add-task-form { display: flex; gap: 4px; }
-        .add-task-input {
-            width: 100%;
-            font-family: 'VT323', monospace;
-            font-size: 15px;
-            padding: 2px 6px;
-            border: 1px solid #e09fbe;
-            background: #fff;
-            border-radius: 3px;
-            color: #3b3038;
-        }
-
-        /* Calendario Mensual */
-        .calendar-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-            font-size: 16px;
-        }
-        .calendar-table th {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 8px;
-            background: #e09fbe;
-            color: #fff;
-            padding: 5px;
-            border: 1px solid #d48395;
-        }
-        .calendar-table td {
-            border: 1px solid #f2c6d9;
-            padding: 5px;
-            background: #fff;
-            cursor: pointer;
-            height: 32px;
-            vertical-align: top;
-            position: relative;
-        }
-        .calendar-table td:hover { background: #fae1dd; }
-        .calendar-table td.today {
-            background: #b56576;
-            color: #fff;
-            font-weight: bold;
-        }
-        .calendar-table td.muted { color: #c8b6bc; }
-        .has-event::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            width: 6px;
-            height: 6px;
-            background: #355070;
-            border-radius: 50%;
-        }
-
-        /* Hábitos */
-        .habit-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 16px;
-            margin-bottom: 6px;
-            background: #fff;
-            padding: 4px 8px;
-            border-radius: 5px;
-            border: 1px solid #e09fbe;
-        }
-        .habit-days { display: flex; gap: 3px; }
-        .habit-day-box {
-            width: 18px;
-            height: 18px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fdf2f4;
-            border: 1px solid #d48395;
-            cursor: pointer;
-            border-radius: 2px;
-        }
-        .habit-day-box.active {
-            background: #b56576;
-            color: white;
-            border-color: #794056;
-        }
-        .progress-bar {
-            background: #fae1dd;
-            border: 1px solid #e09fbe;
-            height: 10px;
-            border-radius: 3px;
-            overflow: hidden;
-            flex-grow: 1;
-            margin-left: 8px;
-        }
-        .progress-fill { background: #b56576; height: 100%; width: 0%; }
-
-        /* Asistente */
-        .hana-container { display: flex; align-items: center; gap: 12px; }
-        .speech-bubble {
-            background: #fff;
-            border: 2px solid #b56576;
-            border-radius: 8px;
-            padding: 8px;
-            font-size: 17px;
-            position: relative;
-            flex-grow: 1;
-        }
-
-        /* Notas Verticales a la Derecha */
-        .notes-column { display: flex; flex-direction: column; gap: 10px; }
-        .sticky-note {
-            background: #fae1dd;
-            border: 1.5px dashed #b56576;
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        .sticky-textarea {
-            width: 100%;
-            height: 65px;
-            background: transparent;
             border: none;
             font-family: 'VT323', monospace;
             font-size: 16px;
-            resize: none;
-            color: #3b3038;
-            outline: none;
+            padding: 4px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .retro-btn:hover { background: #926671; }
+
+        /* Estructura Principal Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 80vh;
+        }
+        @media(max-width: 1100px) {
+            .main-grid { grid-template-columns: 1fr; }
         }
 
-        /* Avatar Animado Flotante */
-        #hanaMascot {
-            position: fixed;
-            width: 55px;
-            height: 55px;
-            background: #b56576;
-            border: 2px solid #794056;
-            border-radius: 50%;
+        /* Columna Izquierda (Hábitos, Calendario, Notas) */
+        .sidebar-left {
+            background: #faf6f3;
+            border-right: 2px solid #e2d3ce;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .sidebar-section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #8c6d62;
+            border-bottom: 1px dashed #d8c2bb;
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        /* Hábitos Estilo Planner */
+        .habit-row-mini {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            box-shadow: 2px 2px 0px #355070;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+        .habit-days-mini { display: flex; gap: 2px; }
+        .h-box {
+            width: 16px; height: 16px;
+            background: #fff;
+            border: 1px solid #d8c2bb;
+            font-size: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .h-box.active { background: #b5838d; color: #fff; border-color: #926671; }
+
+        /* Calendario Mini Estética */
+        .mini-cal {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            font-size: 15px;
+        }
+        .mini-cal th {
+            color: #8c6d62;
+            padding: 2px;
+            font-size: 14px;
+        }
+        .mini-cal td {
+            border: 1px solid #f0e6e2;
+            padding: 4px;
+            background: #fff;
+            cursor: pointer;
+        }
+        .mini-cal td:hover { background: #f4ece6; }
+        .mini-cal td.today { background: #b5838d; color: #fff; }
+        .mini-cal td.muted { color: #d0c0bc; }
+
+        /* Panel Derecho: Columnas Semanales (Lunes a Domingo) */
+        .weekly-columns-area {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .week-navigation-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f4ece6;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        .days-grid-columns {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        @media(max-width: 1300px) {
+            .days-grid-columns { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media(max-width: 800px) {
+            .days-grid-columns { grid-template-columns: 1fr; }
+        }
+
+        /* Columna de Día Individual (Estilo de la imagen de referencia) */
+        .day-column {
+            background: #fcf9f7;
+            border: 1px solid #e2d3ce;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .day-column-header {
+            background: #e8d7d1;
+            color: #5c453e;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            border-bottom: 1px solid #d8c2bb;
+        }
+        .day-section-box {
+            padding: 8px;
+            border-bottom: 1px solid #eee4df;
+        }
+        .day-section-title {
+            font-size: 14px;
+            color: #8c6d62;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .focus-input, .task-input-box {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #d8c2bb;
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            padding: 3px 6px;
+            color: #3b3038;
+            border-radius: 3px;
+        }
+        
+        /* Lista de Tareas con barra de progreso por día */
+        .task-list-column {
+            list-style: none;
+            max-height: 220px;
+            overflow-y: auto;
+            margin-bottom: 6px;
+        }
+        .task-row-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 16px;
+            margin-bottom: 3px;
+            background: #fff;
+            padding: 2px 4px;
+            border-radius: 3px;
+            border: 1px solid #f0e6e2;
+        }
+        .progress-container {
+            background: #f0e6e2;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .progress-bar-fill {
+            background: #b5838d;
+            height: 100%;
+            width: 0%;
+        }
+        .delete-btn {
+            background: none; border: none; color: #b5838d; cursor: pointer; font-size: 14px; font-weight: bold;
+        }
+
+        /* Avatar flotante de Hana */
+        #hanaMascot {
+            position: fixed;
+            width: 50px; height: 50px;
+            background: #b5838d;
+            border: 2px solid #5c453e;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px;
+            box-shadow: 2px 2px 0px #ebd5cd;
             cursor: pointer;
             z-index: 9999;
-            user-select: none;
             transition: transform 0.2s;
         }
         #hanaMascot:hover { transform: scale(1.15); }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-        }
-        .modal-content {
-            background: #fcf6f5;
-            border: 3px solid #b56576;
-            padding: 20px;
-            border-radius: 8px;
-            width: 340px;
-            font-size: 18px;
-        }
     </style>
 </head>
 <body>
 
 <div id="hanaMascot" title="¡Hola! Clic para hablar con Hana">🍓</div>
 
-<div class="window">
-    <div class="title-bar">
-        <span>CENTRO DE MANDO // HANA.OS v4.0 (Trinket Girlies Edition)</span>
-        <div style="display:flex; gap:6px; align-items:center;">
-            <button class="retro-btn" style="font-size:12px; padding:2px 6px;" onclick="exportData()">💾 Guardar Respaldo</button>
-            <div class="window-controls">
-                <span></span><span></span><span></span>
-            </div>
+<div class="planner-container">
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        <div class="top-title">✨ WEEKLY PLAN // HANA.OS (Notion Aesthetic Edition)</div>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span id="currentMonthYearLabel" style="font-size: 16px; color: #8c6d62;">Septiembre 2026</span>
+            <button class="retro-btn" onclick="exportData()">💾 Guardar Respaldo</button>
         </div>
     </div>
-    
-    <div class="dashboard-grid">
-        
-        <!-- PLAN SEMANAL (9 cols) -->
-        <div class="card span-9">
-            <div class="card-title">
-                PLAN SEMANAL & HORARIO UNIVERSITARIO
-                <button class="retro-btn" onclick="resetCurrentWeek()">Limpiar Semana</button>
+
+    <div class="main-grid">
+        <!-- COLUMNA IZQUIERDA -->
+        <div class="sidebar-left">
+            <div>
+                <div class="sidebar-section-title">Calendario (Sep 2026)</div>
+                <table class="mini-cal">
+                    <thead>
+                        <tr><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th></tr>
+                    </thead>
+                    <tbody id="miniCalendarBody"></tbody>
+                </table>
             </div>
-            <div class="week-nav">
+
+            <div>
+                <div class="sidebar-section-title">Hábitos Semanales</div>
+                <div id="sidebarHabitsContainer"></div>
+                <div style="display: flex; gap: 4px; margin-top: 6px;">
+                    <input type="text" id="newHabitInput" class="focus-input" placeholder="Nuevo hábito...">
+                    <button class="retro-btn" onclick="addHabit()">+</button>
+                </div>
+            </div>
+
+            <div>
+                <div class="sidebar-section-title">Notas Rápidas</div>
+                <textarea id="quickNotesArea" class="focus-input" style="height: 100px; resize: none;" oninput="saveNotes()"></textarea>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: PLAN SEMANAL EN COLUMNAS -->
+        <div class="weekly-columns-area">
+            <div class="week-navigation-bar">
                 <button class="retro-btn" onclick="changeWeek(-1)">◀ Semana Anterior</button>
-                <span id="weekLabel" style="font-family: 'Press Start 2P', monospace; font-size: 10px;">Semana</span>
+                <span id="weekRangeLabel" style="font-weight: bold; font-size: 18px; color: #5c453e;">Semana</span>
                 <button class="retro-btn" onclick="changeWeek(1)">Semana Siguiente ▶</button>
             </div>
-            <div class="week-grid-large" id="weekGridContainer"></div>
-        </div>
 
-        <!-- NOTAS & PROYECTOS (3 cols - Derecha) -->
-        <div class="card span-3">
-            <div class="card-title">NOTAS & PROYECTOS</div>
-            <div class="notes-column">
-                <div class="sticky-note">
-                    <strong>Proyecto Alpha:</strong>
-                    <textarea class="sticky-textarea" id="note0" oninput="saveNotes()"></textarea>
-                </div>
-                <div class="sticky-note">
-                    <strong>Recordatorio:</strong>
-                    <textarea class="sticky-textarea" id="note1" oninput="saveNotes()"></textarea>
-                </div>
-                <div class="sticky-note">
-                    <strong>Ideas UI:</strong>
-                    <textarea class="sticky-textarea" id="note2" oninput="saveNotes()"></textarea>
-                </div>
-            </div>
-        </div>
-
-        <!-- PRODUCTIVIDAD & HÁBITOS (8 cols) -->
-        <div class="card span-8">
-            <div class="card-title">PRODUCTIVIDAD & HÁBITOS (7 DÍAS)</div>
-            <div style="margin-bottom: 10px; font-size: 17px;">
-                <strong>Metas Clave:</strong>
-                <div id="metasContainer" style="margin-top: 4px;"></div>
-                <div style="display: flex; gap: 6px; margin-top: 4px;">
-                    <input type="text" id="nuevaMetaInput" class="add-task-input" placeholder="Añadir meta clave...">
-                    <button class="retro-btn" onclick="addMeta()">Añadir</button>
-                </div>
-            </div>
-            <strong>Seguimiento de Hábitos:</strong>
-            <div id="habitsContainer" style="margin-top: 4px;"></div>
-            <div style="display: flex; gap: 6px; margin-top: 6px;">
-                <input type="text" id="nuevoHabitoInput" class="add-task-input" placeholder="Nuevo hábito (ej: Programar)...">
-                <button class="retro-btn" onclick="addHabit()">Añadir Hábito</button>
-            </div>
-        </div>
-
-        <!-- CALENDARIO MENSUAL (4 cols) -->
-        <div class="card span-4">
-            <div class="card-title">
-                CALENDARIO MENSUAL
-                <span id="monthYearLabel" style="font-size: 9px; font-family: 'Press Start 2P', monospace;">SEP 2026</span>
-            </div>
-            <table class="calendar-table">
-                <thead>
-                    <tr><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th></tr>
-                </thead>
-                <tbody id="calendarBody"></tbody>
-            </table>
-            <div style="font-size: 13px; margin-top: 6px; color: #794056; text-align: center;">
-                * Clic en un día para ver o añadir eventos y citas.
-            </div>
-        </div>
-
-        <!-- ASISTENTE VIRTUAL (6 cols) -->
-        <div class="card span-6">
-            <div class="card-title">ASISTENTE VIRTUAL (HANA)</div>
-            <div class="hana-container">
-                <div style="font-size: 34px; background:#fae1dd; padding:10px; border-radius:50%; border:2px solid #b56576;">🍓</div>
-                <div class="speech-bubble" id="hanaSpeech">
-                    «¡Hola! He integrado tu horario universitario completo en los días correspondientes. ¡Mucho éxito!»
-                </div>
-            </div>
-        </div>
-
-        <!-- REPRODUCTOR DE MÚSICA (6 cols) -->
-        <div class="card span-6">
-            <div class="card-title">HANA'S PLAYLIST (Trinket Vibes)</div>
-            <div style="font-size: 18px; padding: 6px;">
-                <strong>Artista:</strong> Lofi Fruits Music<br>
-                <strong>Estado:</strong> Sonando beats suaves para programar
-            </div>
-            <div style="display: flex; justify-content: center; gap: 20px; font-size: 24px; margin-top: 6px; cursor: pointer;">
-                <span onclick="alert('⏮ Pista anterior')">⏮</span>
-                <span onclick="alert('▶ Reproduciendo')">▶</span>
-                <span onclick="alert('⏸ Pausado')">⏸</span>
-                <span onclick="alert('⏭ Siguiente')">⏭</span>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<!-- Modal Eventos -->
-<div class="modal" id="eventModal">
-    <div class="modal-content">
-        <h3 id="modalDateTitle" style="font-family: 'Press Start 2P', monospace; font-size: 11px; margin-bottom: 10px; color: #794056;">Editar Día</h3>
-        <p style="font-size: 16px; margin-bottom: 6px;">Eventos, citas o notas del día:</p>
-        <textarea id="modalEventInput" style="width:100%; height:80px; font-family:'VT323'; font-size:18px; padding:6px; border:1px solid #e09fbe; background:#fff; color:#3b3038;"></textarea>
-        <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
-            <button class="retro-btn" onclick="closeModal()">Cancelar</button>
-            <button class="retro-btn" onclick="saveEvent()">Guardar</button>
+            <!-- Contenedor de las 7 columnas de los días -->
+            <div class="days-grid-columns" id="daysGridColumns"></div>
         </div>
     </div>
 </div>
 
 <script>
     let currentWeekOffset = 0;
-    const diasSemanaNombres = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
-    
-    // Horario universitario predeterminado basado en tu imagen (se inyecta si la semana está vacía)
+    const diasNombres = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
+
+    // Horario universitario predeterminado inyectado en las columnas
     const horarioUniversidad = {
-        0: ["SIST. OPE. 10am-1pm", "EDA 2-5pm", "EST. APL. 7-10pm"], // Lunes
-        1: ["SIST. INTE. 7-10am", "ING. PRO. 8-10pm"],              // Martes
-        2: ["SIST. OPE. 10am-1pm", "ING. SOFT. 4-6pm"],              // Miércoles
-        3: ["EDA 2-5pm", "EST. APL. 8-10pm"],                       // Jueves
-        4: ["SIST. INTE. 7-9am", "ING. SOFT. 3-6pm", "ING. PRO. 8-10pm"], // Viernes
-        5: [],                                                      // Sábado
-        6: []                                                       // Domingo
+        0: ["📚 SIST. OPE. 10am-1pm", "📚 EDA 2-5pm", "📚 EST. APL. 7-10pm"],
+        1: ["📚 SIST. INTE. 7-10am", "📚 ING. PRO. 8-10pm"],
+        2: ["📚 SIST. OPE. 10am-1pm", "📚 ING. SOFT. 4-6pm"],
+        3: ["📚 EDA 2-5pm", "📚 EST. APL. 8-10pm"],
+        4: ["📚 SIST. INTE. 7-9am", "📚 ING. SOFT. 3-6pm", "📚 ING. PRO. 8-10pm"],
+        5: [],
+        6: []
     };
 
     const frasesHana = [
-        "«¡Recuerda revisar tus bloques de SIST. OPE y EDA esta semana!»",
-        "«El estilo 'Trinket Girlies' le da una vibra hermosa a tu código.»",
-        "«Tómate un respiro con un café o un snack rico.»",
-        "«¡Tú puedes con todas tus entregas de sistemas!»"
+        "«¡Qué organizada se ve tu semana con este estilo de Notion!»",
+        "«No olvides revisar tus bloques de sistemas y bases de datos hoy.»",
+        "«¡Vas excelente con tus entregas y proyectos universitarios!»"
     ];
 
-    // Animación flotante de Hana
+    // Animación de Hana flotando
     const mascot = document.getElementById('hanaMascot');
-    let posX = 60, posY = 60;
-    let velX = 1.1, velY = 0.8;
-
+    let posX = 40, posY = 40, velX = 1.0, velY = 0.7;
     function animateHana() {
-        posX += velX;
-        posY += velY;
-        if (posX <= 10 || posX >= window.innerWidth - 70) velX *= -1;
-        if (posY <= 10 || posY >= window.innerHeight - 70) velY *= -1;
+        posX += velX; posY += velY;
+        if (posX <= 10 || posX >= window.innerWidth - 60) velX *= -1;
+        if (posY <= 10 || posY >= window.innerHeight - 60) velY *= -1;
         mascot.style.left = posX + 'px';
         mascot.style.top = posY + 'px';
         requestAnimationFrame(animateHana);
     }
     animateHana();
-
     mascot.onclick = function() {
-        const index = Math.floor(Math.random() * frasesHana.length);
-        document.getElementById('hanaSpeech').innerText = frasesHana[index];
+        const f = frasesHana[Math.floor(Math.random() * frasesHana.length)];
+        alert(f);
     };
 
-    // Datos y LocalStorage con llave fija para no perder memoria
-    let data = JSON.parse(localStorage.getItem('hana_dashboard_v4')) || {
-        tasks: {},
-        metas: ["Arquitectura de sistema", "Optimización de assets"],
+    // Datos y Memoria Local robusta
+    let notionData = JSON.parse(localStorage.getItem('hana_dashboard_v5')) || {
+        days: {}, // Estructura: { '2026-09-21': { focus: '...', events: '...', tasks: [{text: '...', done: false}] } }
         habits: [
-            {name: "Ejercicio", days: [false, false, false, false, false, false, false]},
-            {name: "Lectura", days: [false, false, false, false, false, false, false]}
+            { name: "Ejercicio", days: [false, false, false, false, false, false, false] },
+            { name: "Lectura", days: [false, false, false, false, false, false, false] }
         ],
-        events: {},
-        notes: ["Revisar documentación de API y endpoints.", "Actualizar dependencias de Python y Node.js.", "Preparar dashboards en Power BI."]
+        notes: "Revisar pendientes de la API y reportes en Power BI."
     };
 
-    function saveData() {
-        localStorage.setItem('hana_dashboard_v4', JSON.stringify(data));
+    function saveNotionData() {
+        localStorage.setItem('hana_dashboard_v5', JSON.stringify(notionData));
     }
 
     function exportData() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "hana_mando_backup.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(notionData));
+        const anchor = document.createElement('a');
+        anchor.setAttribute("href", dataStr);
+        anchor.setAttribute("download", "hana_notion_backup.json");
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
     }
 
-    // --- PLAN SEMANAL CON HORARIO ---
     function getMonday(d, offset) {
         d = new Date(d);
         d.setDate(d.getDate() + (offset * 7));
@@ -538,171 +368,130 @@
         return new Date(d.setDate(diff));
     }
 
-    function renderWeek() {
-        const container = document.getElementById('weekGridContainer');
+    function renderWeeklyPlanner() {
+        const container = document.getElementById('daysGridColumns');
         container.innerHTML = '';
 
         let monday = getMonday(new Date(), currentWeekOffset);
-        document.getElementById('weekLabel').innerText = `Semana del ${monday.getDate()} de Septiembre en adelante`;
+        let sunday = new Date(monday);
+        sunday.setDate(monday.getDate() + 6);
+        document.getElementById('weekRangeLabel').innerText = `Semana del ${monday.getDate()} de Sep al ${sunday.getDate()} de Sep, 2026`;
 
         for (let i = 0; i < 7; i++) {
-            let currentDayDate = new Date(monday);
-            currentDayDate.setDate(monday.getDate() + i);
-            let dayNum = currentDayDate.getDate();
-            
-            let year = currentDayDate.getFullYear();
-            let month = String(currentDayDate.getMonth() + 1).padStart(2, '0');
-            let dayStr = String(dayNum).padStart(2, '0');
-            let dayKey = `${year}-${month}-${dayStr}`;
+            let currentDay = new Date(monday);
+            currentDay.setDate(monday.getDate() + i);
+            let dNum = currentDay.getDate();
+            let dateKey = `2026-09-${dNum < 10 ? '0'+dNum : dNum}`;
 
-            // Si no hay tareas para este día, inyectamos automáticamente las clases de tu horario universitario
-            if (!data.tasks[dayKey]) {
-                data.tasks[dayKey] = (horarioUniversidad[i] || []).map(curso => ({ text: `📚 ${curso}`, done: false }));
+            // Inicializar datos del día si no existen
+            if (!notionData.days[dateKey]) {
+                notionData.days[dateKey] = {
+                    focus: i === 0 ? "Avanzar arquitectura de sistema" : "",
+                    events: "",
+                    tasks: (horarioUniversidad[i] || []).map(c => ({ text: c, done: false }))
+                };
             }
 
-            const dayBox = document.createElement('div');
-            dayBox.className = 'day-box-large';
-            
+            let dayObj = notionData.days[dateKey];
+
+            // Calcular porcentaje de tareas completadas del día
+            let totalTasks = dayObj.tasks.length;
+            let completedTasks = dayObj.tasks.filter(t => t.done).length;
+            let percent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
             let tasksHtml = '';
-            data.tasks[dayKey].forEach((t, idx) => {
+            dayObj.tasks.forEach((t, tIdx) => {
                 tasksHtml += `
-                    <li class="task-item">
+                    <li class="task-row-item">
                         <label style="display:flex; align-items:center; word-break:break-all;">
-                            <input type="checkbox" ${t.done ? 'checked' : ''} onclick="toggleTask('${dayKey}', ${idx})">
-                            <span style="${t.done ? 'text-decoration: line-through; color: #a08c95;' : ''}">${t.text}</span>
+                            <input type="checkbox" ${t.done ? 'checked' : ''} onclick="toggleTask('${dateKey}', ${tIdx})">
+                            <span style="${t.done ? 'text-decoration: line-through; color: #a08c85;' : ''}">${t.text}</span>
                         </label>
-                        <button class="task-delete" onclick="deleteTask('${dayKey}', ${idx})">×</button>
+                        <button class="delete-btn" onclick="deleteTask('${dateKey}', ${tIdx})">×</button>
                     </li>
                 `;
             });
 
-            dayBox.innerHTML = `
-                <div class="day-header dh-${i}">${diasSemanaNombres[i]} ${dayNum}</div>
-                <ul class="task-list">${tasksHtml}</ul>
-                <div class="add-task-form">
-                    <input type="text" id="taskInput-${dayKey}" class="add-task-input" placeholder="Añadir...">
-                    <button class="retro-btn" onclick="addTask('${dayKey}')">+</button>
+            const col = document.createElement('div');
+            col.className = 'day-column';
+            col.innerHTML = `
+                <div class="day-column-header">${diasNombres[i]} ${dNum}</div>
+                
+                <div class="day-section-box">
+                    <div class="day-section-title">Today's Focus</div>
+                    <input type="text" class="focus-input" value="${dayObj.focus}" oninput="updateFocus('${dateKey}', this.value)" placeholder="Enfoque del día...">
+                </div>
+
+                <div class="day-section-box">
+                    <div class="day-section-title">Events / Citas</div>
+                    <input type="text" class="focus-input" value="${dayObj.events}" oninput="updateEvents('${dateKey}', this.value)" placeholder="Ej: 4:00 PM Reunión...">
+                </div>
+
+                <div class="day-section-box" style="flex-grow:1; display:flex; flex-direction:column;">
+                    <div class="day-section-title">
+                        <span>Tasks</span>
+                        <span>${percent}%</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-bar-fill" style="width: ${percent}%;"></div></div>
+                    <ul class="task-list-column" style="margin-top:6px;">${tasksHtml}</ul>
+                    <div style="display:flex; gap:4px; margin-top:auto;">
+                        <input type="text" id="newTaskInput-${dateKey}" class="task-input-box" placeholder="Nueva tarea...">
+                        <button class="retro-btn" style="padding:2px 6px;" onclick="addTask('${dateKey}')">+</button>
+                    </div>
                 </div>
             `;
-            container.appendChild(dayBox);
+            container.appendChild(col);
         }
     }
 
     function changeWeek(dir) {
         currentWeekOffset += dir;
-        renderWeek();
+        renderWeeklyPlanner();
     }
 
-    function addTask(dayKey) {
-        const input = document.getElementById(`taskInput-${dayKey}`);
+    function updateFocus(dateKey, val) { notionData.days[dateKey].focus = val; saveNotionData(); }
+    function updateEvents(dateKey, val) { notionData.days[dateKey].events = val; saveNotionData(); }
+
+    function addTask(dateKey) {
+        const input = document.getElementById(`newTaskInput-${dateKey}`);
         if (!input.value.trim()) return;
-        if (!data.tasks[dayKey]) data.tasks[dayKey] = [];
-        data.tasks[dayKey].push({ text: input.value.trim(), done: false });
-        saveData();
-        renderWeek();
+        notionData.days[dateKey].tasks.push({ text: input.value.trim(), done: false });
+        saveNotionData();
+        renderWeeklyPlanner();
     }
 
-    function deleteTask(dayKey, idx) {
-        data.tasks[dayKey].splice(idx, 1);
-        saveData();
-        renderWeek();
+    function deleteTask(dateKey, tIdx) {
+        notionData.days[dateKey].tasks.splice(tIdx, 1);
+        saveNotionData();
+        renderWeeklyPlanner();
     }
 
-    function toggleTask(dayKey, idx) {
-        data.tasks[dayKey][idx].done = !data.tasks[dayKey][idx].done;
-        saveData();
-        renderWeek();
+    function toggleTask(dateKey, tIdx) {
+        notionData.days[dateKey].tasks[tIdx].done = !notionData.days[dateKey].tasks[tIdx].done;
+        saveNotionData();
+        renderWeeklyPlanner();
     }
 
-    function resetCurrentWeek() {
-        renderWeek();
-    }
-
-    // --- METAS Y HÁBITOS ---
-    function renderMetasAndHabits() {
-        const metasContainer = document.getElementById('metasContainer');
-        metasContainer.innerHTML = '';
-        data.metas.forEach((meta, idx) => {
-            metasContainer.innerHTML += `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>• ${meta}</span>
-                    <button class="task-delete" onclick="deleteMeta(${idx})">×</button>
-                </div>
-            `;
-        });
-
-        const habitsContainer = document.getElementById('habitsContainer');
-        habitsContainer.innerHTML = '';
-        data.habits.forEach((habit, hIdx) => {
-            let daysHtml = '', completed = 0;
-            habit.days.forEach((isChecked, dIdx) => {
-                if (isChecked) completed++;
-                daysHtml += `<div class="habit-day-box ${isChecked ? 'active' : ''}" onclick="toggleHabitDay(${hIdx}, ${dIdx})">${diasSemanaNombres[dIdx][0]}</div>`;
-            });
-            let percent = Math.round((completed / 7) * 100);
-            habitsContainer.innerHTML += `
-                <div class="habit-row">
-                    <div style="width:80px; overflow:hidden;">${habit.name}</div>
-                    <div class="habit-days">${daysHtml}</div>
-                    <div class="progress-bar"><div class="progress-fill" style="width: ${percent}%;"></div></div>
-                    <span style="font-size:13px; margin-left:4px;">${percent}%</span>
-                    <button class="task-delete" style="margin-left:4px;" onclick="deleteHabit(${hIdx})">×</button>
-                </div>
-            `;
-        });
-    }
-
-    function addMeta() {
-        const input = document.getElementById('nuevaMetaInput');
-        if (!input.value.trim()) return;
-        data.metas.push(input.value.trim());
-        input.value = '';
-        saveData();
-        renderMetasAndHabits();
-    }
-    function deleteMeta(idx) { data.metas.splice(idx, 1); saveData(); renderMetasAndHabits(); }
-
-    function addHabit() {
-        const input = document.getElementById('nuevoHabitoInput');
-        if (!input.value.trim()) return;
-        data.habits.push({ name: input.value.trim(), days: [false, false, false, false, false, false, false] });
-        input.value = '';
-        saveData();
-        renderMetasAndHabits();
-    }
-    function deleteHabit(idx) { data.habits.splice(idx, 1); saveData(); renderMetasAndHabits(); }
-    function toggleHabitDay(hIdx, dIdx) {
-        data.habits[hIdx].days[dIdx] = !data.habits[hIdx].days[dIdx];
-        saveData();
-        renderMetasAndHabits();
-    }
-
-    // --- CALENDARIO MENSUAL ---
-    let selectedDateKey = '';
-    function renderCalendar() {
-        const tbody = document.getElementById('calendarBody');
+    // --- MINI CALENDARIO Y HÁBITOS ---
+    function renderSidebar() {
+        // Calendario de Septiembre 2026
+        const tbody = document.getElementById('miniCalendarBody');
         tbody.innerHTML = '';
         let dayCounter = 1, daysInMonth = 30, startDay = 1;
         let row = document.createElement('tr');
-
         for (let i = 0; i < startDay; i++) row.innerHTML += `<td class="muted">${31 - (startDay - i - 1)}</td>`;
         for (let i = startDay; i < 7; i++) {
-            let dateStr = `2026-09-${dayCounter < 10 ? '0'+dayCounter : dayCounter}`;
-            let hasEv = data.events[dateStr] ? 'has-event' : '';
             let isToday = (dayCounter === 17) ? 'today' : '';
-            row.innerHTML += `<td class="${isToday} ${hasEv}" onclick="openModal('${dateStr}')">${dayCounter}</td>`;
+            row.innerHTML += `<td class="${isToday}">${dayCounter}</td>`;
             dayCounter++;
         }
         tbody.appendChild(row);
-
         while (dayCounter <= daysInMonth) {
             row = document.createElement('tr');
             for (let i = 0; i < 7; i++) {
                 if (dayCounter <= daysInMonth) {
-                    let dateStr = `2026-09-${dayCounter < 10 ? '0'+dayCounter : dayCounter}`;
-                    let hasEv = data.events[dateStr] ? 'has-event' : '';
                     let isToday = (dayCounter === 17) ? 'today' : '';
-                    row.innerHTML += `<td class="${isToday} ${hasEv}" onclick="openModal('${dateStr}')">${dayCounter}</td>`;
+                    row.innerHTML += `<td class="${isToday}">${dayCounter}</td>`;
                     dayCounter++;
                 } else {
                     row.innerHTML += `<td class="muted">${dayCounter - daysInMonth}</td>`;
@@ -711,38 +500,50 @@
             }
             tbody.appendChild(row);
         }
+
+        // Hábitos
+        const hContainer = document.getElementById('sidebarHabitsContainer');
+        hContainer.innerHTML = '';
+        notionData.habits.forEach((h, hIdx) => {
+            let daysHtml = '';
+            h.days.forEach((checked, dIdx) => {
+                daysHtml += `<div class="h-box ${checked ? 'active' : ''}" onclick="toggleHabit(${hIdx}, ${dIdx})">${diasNombres[dIdx][0]}</div>`;
+            });
+            hContainer.innerHTML += `
+                <div class="habit-row-mini">
+                    <span style="width:70px; overflow:hidden;">${h.name}</span>
+                    <div class="habit-days-mini">${daysHtml}</div>
+                    <button class="delete-btn" onclick="deleteHabit(${hIdx})">×</button>
+                </div>
+            `;
+        });
+
+        // Notas
+        document.getElementById('quickNotesArea').value = notionData.notes;
     }
 
-    function openModal(dateStr) {
-        selectedDateKey = dateStr;
-        document.getElementById('modalDateTitle').innerText = `Eventos: ${dateStr}`;
-        document.getElementById('modalEventInput').value = data.events[dateStr] || '';
-        document.getElementById('eventModal').style.display = 'flex';
+    function addHabit() {
+        const input = document.getElementById('newHabitInput');
+        if (!input.value.trim()) return;
+        notionData.habits.push({ name: input.value.trim(), days: [false, false, false, false, false, false, false] });
+        input.value = '';
+        saveNotionData();
+        renderSidebar();
     }
-    function closeModal() { document.getElementById('eventModal').style.display = 'none'; }
-    function saveEvent() {
-        const val = document.getElementById('modalEventInput').value.trim();
-        if (val) data.events[selectedDateKey] = val;
-        else delete data.events[selectedDateKey];
-        saveData();
-        closeModal();
-        renderCalendar();
-    }
-
-    // --- NOTAS ---
-    function renderNotes() {
-        for (let i = 0; i < 3; i++) document.getElementById(`note${i}`).value = data.notes[i] || '';
+    function deleteHabit(hIdx) { notionData.habits.splice(hIdx, 1); saveNotionData(); renderSidebar(); }
+    function toggleHabit(hIdx, dIdx) {
+        notionData.habits[hIdx].days[dIdx] = !notionData.habits[hIdx].days[dIdx];
+        saveNotionData();
+        renderSidebar();
     }
     function saveNotes() {
-        for (let i = 0; i < 3; i++) data.notes[i] = document.getElementById(`note${i}`).value;
-        saveData();
+        notionData.notes = document.getElementById('quickNotesArea').value;
+        saveNotionData();
     }
 
     window.onload = function() {
-        renderWeek();
-        renderMetasAndHabits();
-        renderCalendar();
-        renderNotes();
+        renderSidebar();
+        renderWeeklyPlanner();
     };
 </script>
 
