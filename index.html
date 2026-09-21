@@ -279,25 +279,6 @@
             background: none; border: none; color: #b5838d; cursor: pointer; font-size: 14px; font-weight: bold;
         }
 
-        /* Avatar flotante de Hana */
-        #hanaMascot {
-            position: fixed;
-            width: 50px; height: 50px;
-            background: #b5838d;
-            border: 2px solid #5c453e;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-            box-shadow: 2px 2px 0px #ebd5cd;
-            cursor: pointer;
-            z-index: 9999;
-            transition: transform 0.2s;
-        }
-        #hanaMascot:hover { transform: scale(1.15); }
-    </style>
-</head>
-<body>
-
 <!-- PANTALLA DE ACCESO CLAVE MAESTRA -->
 <div id="authOverlay">
     <div class="auth-box">
@@ -308,8 +289,6 @@
         <p id="authErrorMsg" style="color: #b5838d; font-size: 14px; margin-top: 8px; display: none;">Clave incorrecta</p>
     </div>
 </div>
-
-<div id="hanaMascot" title="¡Hola! Clic para hablar con Hana">🍓</div>
 
 <div class="planner-container" id="mainPlannerContainer">
     <!-- Barra Superior -->
@@ -409,29 +388,6 @@
     let currentWeekOffset = 0;
     const diasNombres = ["LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO", "DOMINGO"];
 
-    const frasesHana = [
-        "«¡Sincronizado al instante con tu celular y tu PC!»",
-        "«Recuerda revisar tus enlaces directos y proyectos de sistemas hoy.»",
-        "«¡Lo estás haciendo genial en la universidad y tus emprendimientos!»"
-    ];
-
-    // Animación de Hana flotando
-    const mascot = document.getElementById('hanaMascot');
-    let posX = 40, posY = 40, velX = 1.0, velY = 0.7;
-    function animateHana() {
-        posX += velX; posY += velY;
-        if (posX <= 10 || posX >= window.innerWidth - 60) velX *= -1;
-        if (posY <= 10 || posY >= window.innerHeight - 60) velY *= -1;
-        mascot.style.left = posX + 'px';
-        mascot.style.top = posY + 'px';
-        requestAnimationFrame(animateHana);
-    }
-    animateHana();
-    mascot.onclick = function() {
-        const f = frasesHana[Math.floor(Math.random() * frasesHana.length)];
-        alert(f);
-    };
-
     // Estructura de datos por defecto en Firestore
     let notionData = {
         days: {},
@@ -441,7 +397,7 @@
         ],
         links: [
             { title: "GitHub Portfolio", url: "https://github.com" },
-            { title: "Nereida Jewelry", url: "https://instagram.com" }
+            { title: "Nereida Joyas", url: "https://instagram.com" }
         ],
         notes: "Revisar pendientes de la API y reportes en Power BI."
     };
